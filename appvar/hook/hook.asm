@@ -18,6 +18,9 @@ end macro
 
 ;---------------------------------
 
+screenSaverValue:
+    db 0
+
 hookStrart:
     db $83
     set ti.apdAble, (iy + ti.apdFlags)
