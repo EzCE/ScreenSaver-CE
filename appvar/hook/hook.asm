@@ -5,6 +5,9 @@ include 'include/ti84pceg.inc'
 
 ;---------------------------------
 
+screenBackupSize := (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
+statusBarBackupSize := (300 * 10) * 2
+
 macro spi cmd, params&
     ld a, cmd
     call spiCmd
@@ -51,6 +54,11 @@ continueHook:
     ld hl, -1
     ld (hl), 2
     ;---------------
+    push bc
+    ld hl, cProgSize + screenBackupSize + statusBarBackupSize + 128
+    call ti.EnoughMem
+    pop bc
+    jr c, abortHook
     ld hl, (ti.curRow)
     push hl
     ; I don't know what these do but I need to preserve them since HomeUp messes with them
@@ -65,7 +73,7 @@ continueHook:
     ld de, tempProg - hookStrart
     add hl, de
     call ti.Mov9ToOP1
-    ld hl, (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
+    ld hl, screenBackupSize + statusBarBackupSize
     ld a, ti.TempProgObj
     call ti.CreateVar
     inc de
@@ -79,7 +87,7 @@ continueHook:
     ldir
     pop de
     ld hl, ti.vRam + ((ti.lcdWidth * 2) * 30)
-    ld bc, (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
+    ld bc, screenBackupSize
     call storeScreen
     ld hl, cProgSize
     push hl
@@ -93,6 +101,13 @@ continueHook:
     pop bc
     ldir
     call ti.userMem
+    ld hl, ti.mpLcdCtrl
+    ld de, (hl)
+    ex de, hl
+    ld bc, ti.lcdIntFront
+    add hl, bc
+    ex de, hl
+    ld (hl), de
     ; Initialize the SPI interface
     ld hl, $2000B
     ld (ti.mpSpiRange + ti.spiCtrl1), hl
@@ -130,6 +145,14 @@ continueHook:
     ld bc, hookEnd - storeScreen
     ldir
     call ti.pixelShadow2 + (findRestoreProgram - storeScreen)
+    ld hl, ti.mpLcdCtrl
+    ld de, (hl)
+    ex de, hl
+    ld bc, ti.lcdIntFront
+    or a, a
+    sbc hl, bc
+    ex de, hl
+    ld (hl), de
     call ti.ApdSetup
     pop ix
     pop hl
@@ -140,7 +163,7 @@ continueHook:
     pop hl
     ld (ti.curRow), hl
     ld hl, (ti.getKeyHookPtr)
-    ld de, rawKeyHook
+    ld de, rawKeyHook - hookStrart
     add hl, de
     call ti.SetGetKeyHook
     set 7, (iy + ti.asm_Flag2)
@@ -205,6 +228,19 @@ storeScreen:
     ld a, b
     or a, c
     jr nz, storeScreen
+    ld hl, ti.vRam + (16 * ti.lcdWidth * 2) + (2 * 2)
+    ld b, 10
+
+.loopBckupStatusBar:
+    push bc
+    push hl
+    ld bc, 300 * 2
+    ldir
+    pop hl
+    ld bc, ti.lcdWidth * 2
+    add hl, bc
+    pop bc
+    djnz .loopBckupStatusBar
     ret
 
 findRestoreProgram:
@@ -222,7 +258,7 @@ findRestoreProgram:
     inc de
     inc de
     ld hl, ti.vRam + ((ti.lcdWidth * 2) * 30)
-    ld bc, (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
+    ld bc, screenBackupSize
 
 restoreScreen:
     push de
@@ -243,6 +279,22 @@ restoreScreen:
     ld a, b
     or a, c
     jr nz, restoreScreen
+    ex de, hl
+    ld de, ti.vRam + (16 * ti.lcdWidth * 2) + (2 * 2)
+    ld b, 10
+
+.redrawStatusBarLoop:
+    push bc
+    push de
+    ld bc, 300 * 2
+    ldir
+    pop de
+    ex de, hl
+    ld bc, ti.lcdWidth * 2
+    add hl, bc
+    ex de, hl
+    pop bc
+    djnz .redrawStatusBarLoop
     ld a, (ti.cxCurApp)
     cp a, ti.cxGraph
     jr nz, lcdCurrLoop
