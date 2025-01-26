@@ -7,6 +7,7 @@ include 'include/ti84pceg.inc'
 
 screenBackupSize := (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
 statusBarBackupSize := (300 * 10) * 2
+hookBackup := ti.pixelShadow2
 
 macro spi cmd, params&
     ld a, cmd
@@ -164,7 +165,15 @@ errorHandler:
     ld.sis ($2685), hl
     pop hl
     ld (ti.curRow), hl
-    ; add getkey hook backup here
+    or a, a
+    sbc hl, hl
+    ld (hookBackup), hl
+    bit ti.rawKeyHookActive, (iy + ti.hookflags2)
+    jr z, setHook
+    ld hl, (ti.rawKeyHookPtr)
+    ld (hookBackup), hl
+
+setHook:
     ld hl, (ti.getKeyHookPtr)
     ld de, rawKeyHook - hookStrart
     add hl, de
@@ -176,10 +185,10 @@ errorHandler:
 
 rawKeyHook:
     db $83
-    ;ld hl, -1
-    ;ld (hl), 2
-    ; restore possibly backed up hook
     call ti.ClrRawKeyHook
+    ld hl, (hookBackup)
+    call ti.ChkHLIs0
+    call nz, ti.SetGetKeyHook
     xor a, a
     ret
 
@@ -235,7 +244,7 @@ storeScreen:
     ld hl, ti.vRam + (16 * ti.lcdWidth * 2) + (2 * 2)
     ld b, 10
 
-.loopBckupStatusBar:
+loopBckupStatusBar:
     push bc
     push hl
     ld bc, 300 * 2
@@ -244,7 +253,7 @@ storeScreen:
     ld bc, ti.lcdWidth * 2
     add hl, bc
     pop bc
-    djnz .loopBckupStatusBar
+    djnz loopBckupStatusBar
     ret
 
 findRestoreProgram:
@@ -287,7 +296,7 @@ restoreScreen:
     ld de, ti.vRam + (16 * ti.lcdWidth * 2) + (2 * 2)
     ld b, 10
 
-.redrawStatusBarLoop:
+redrawStatusBarLoop:
     push bc
     push de
     ld bc, 300 * 2
@@ -298,7 +307,7 @@ restoreScreen:
     add hl, bc
     ex de, hl
     pop bc
-    djnz .redrawStatusBarLoop
+    djnz redrawStatusBarLoop
     ld a, (ti.cxCurApp)
     cp a, ti.cxGraph
     jr nz, lcdCurrLoop
