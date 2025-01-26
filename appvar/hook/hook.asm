@@ -62,7 +62,7 @@ continueHook:
     call ti.CleanAll
     call ti.DeleteTempPrograms
     ld hl, (ti.getKeyHookPtr)
-    ld de, tempProg
+    ld de, tempProg - hookStrart
     add hl, de
     call ti.Mov9ToOP1
     ld hl, (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
@@ -72,7 +72,7 @@ continueHook:
     inc de
     push de
     ld hl, (ti.getKeyHookPtr)
-    ld de, pixelShadow2Data
+    ld de, pixelShadow2Data - hookStrart
     add hl, de
     ld de, ti.pixelShadow2
     ld bc, hookEnd - storeScreen
@@ -80,14 +80,14 @@ continueHook:
     pop de
     ld hl, ti.vRam + ((ti.lcdWidth * 2) * 30)
     ld bc, (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
-    call ti.pixelShadow2
+    call storeScreen
     ld hl, cProgSize
     push hl
     ld (ti.asm_prgm_size), hl
     ld de, ti.userMem
     call ti.InsertMem
     ld hl, (ti.getKeyHookPtr)
-    ld de, cProgExec + 2
+    ld de, cProgExec - hookStrart + 2
     add hl, de
     ld de, ti.userMem
     pop bc
@@ -124,7 +124,7 @@ continueHook:
     ld hl, ti.userMem
     call ti.DelMem
     ld hl, (ti.getKeyHookPtr)
-    ld de, pixelShadow2Data
+    ld de, pixelShadow2Data - hookStrart
     add hl, de
     ld de, ti.pixelShadow2
     ld bc, hookEnd - storeScreen
@@ -215,7 +215,7 @@ findRestoreProgram:
     spi $B0, $01 ; disable framebuffer copies
     spi $2C
     ld hl, (ti.getKeyHookPtr)
-    ld de, tempProg
+    ld de, tempProg - hookStrart
     add hl, de
     call ti.Mov9ToOP1
     call ti.ChkFindSym
@@ -245,7 +245,10 @@ restoreScreen:
     jr nz, restoreScreen
     ld a, (ti.cxCurApp)
     cp a, ti.cxGraph
-    call z, ti.DrawGraphBackground
+    jr nz, lcdCurrLoop
+    call ti.DrawGraphBackground
+    bit ti.drawGrBackground, (iy + ti.graphBgFlags)
+    call nz, ti.GrBufCpy
 
 lcdCurrLoop:
     ld a, (ti.mpLcdCurr + 2) ; a = *mpLcdCurr >> 16
