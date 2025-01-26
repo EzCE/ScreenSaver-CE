@@ -164,6 +164,7 @@ errorHandler:
     ld.sis ($2685), hl
     pop hl
     ld (ti.curRow), hl
+    ; add getkey hook backup here
     ld hl, (ti.getKeyHookPtr)
     ld de, rawKeyHook - hookStrart
     add hl, de
@@ -177,6 +178,7 @@ rawKeyHook:
     db $83
     ;ld hl, -1
     ;ld (hl), 2
+    ; restore possibly backed up hook
     call ti.ClrRawKeyHook
     xor a, a
     ret
