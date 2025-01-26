@@ -100,7 +100,14 @@ continueHook:
     ld de, ti.userMem
     pop bc
     ldir
+    ld hl, (ti.getKeyHookPtr)
+    ld de, errorHandler - hookStrart
+    add hl, de
+    call ti.PushErrorHandler
     call ti.userMem
+    call ti.PopErrorHandler
+
+errorHandler:
     ld hl, ti.mpLcdCtrl
     ld de, (hl)
     ex de, hl
