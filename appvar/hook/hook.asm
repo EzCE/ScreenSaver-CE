@@ -146,12 +146,7 @@ continueHook:
     ldir
     call ti.pixelShadow2 + (findRestoreProgram - storeScreen)
     ld hl, ti.mpLcdCtrl
-    ld de, (hl)
-    ex de, hl
-    ld bc, ti.lcdIntFront
-    or a, a
-    sbc hl, bc
-    ex de, hl
+    ld de, ti.lcdNormalMode
     ld (hl), de
     call ti.ApdSetup
     pop ix
