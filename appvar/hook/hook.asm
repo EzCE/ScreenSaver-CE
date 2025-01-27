@@ -102,13 +102,17 @@ continueHook:
     pop bc
     ldir
     ld hl, (ti.getKeyHookPtr)
+    push hl
     ld de, errorHandler - hookStrart
     add hl, de
     call ti.PushErrorHandler
+    call ti.ClrGetKeyHook
     call ti.userMem
     call ti.PopErrorHandler
 
 errorHandler:
+    pop hl
+    call ti.SetGetCSCHook
     ld hl, ti.mpLcdCtrl
     ld de, (hl)
     ex de, hl
@@ -244,7 +248,7 @@ storeScreen:
     ld hl, ti.vRam + (16 * ti.lcdWidth * 2) + (2 * 2)
     ld b, 10
 
-loopBckupStatusBar:
+loopBackupStatusBar:
     push bc
     push hl
     ld bc, 300 * 2
@@ -253,7 +257,7 @@ loopBckupStatusBar:
     ld bc, ti.lcdWidth * 2
     add hl, bc
     pop bc
-    djnz loopBckupStatusBar
+    djnz loopBackupStatusBar
     ret
 
 findRestoreProgram:
@@ -272,6 +276,17 @@ findRestoreProgram:
     inc de
     ld hl, ti.vRam + ((ti.lcdWidth * 2) * 30)
     ld bc, screenBackupSize
+    ld a, (ti.cxCurApp)
+    cp a, ti.cxGraph
+    jr nz, restoreScreen
+    push de
+    push bc
+    call ti.DrawGraphBackground
+    call ti.GrBufCpy
+    pop hl
+    pop de
+    add hl, de
+    jr redrawStatusBarLoop - 6
 
 restoreScreen:
     push de
@@ -308,12 +323,6 @@ redrawStatusBarLoop:
     ex de, hl
     pop bc
     djnz redrawStatusBarLoop
-    ld a, (ti.cxCurApp)
-    cp a, ti.cxGraph
-    jr nz, lcdCurrLoop
-    call ti.DrawGraphBackground
-    bit ti.drawGrBackground, (iy + ti.graphBgFlags)
-    call nz, ti.GrBufCpy
 
 lcdCurrLoop:
     ld a, (ti.mpLcdCurr + 2) ; a = *mpLcdCurr >> 16
