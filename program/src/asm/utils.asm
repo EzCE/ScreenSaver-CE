@@ -8,8 +8,6 @@ include 'include/ti84pceg.inc'
     public _isHookInstalled
 
 _installHook:
-    ld hl, -1
-    ld (hl), 2
     ld iy, ti.flags
     ld hl, _appvarName
     call ti.Mov9ToOP1
@@ -23,8 +21,6 @@ _installHook:
     jp ti.SetGetCSCHook
 
 _isHookInstalled:
-    ld hl, -1
-    ld (hl), 2
     ld iy, ti.flags
     xor a, a
     bit ti.getCSCHookActive, (iy + ti.hookflags2)

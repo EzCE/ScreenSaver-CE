@@ -1,4 +1,5 @@
 #include "asm/utils.h"
+#include "../../appvar/src/screensavers.h"
 
 #include <fileioc.h>
 #include <graphx.h>
@@ -8,6 +9,8 @@
 #include <ti/screen.h>
 
 void redraw(bool option, bool hookEnabled, uint8_t animation) {
+    static const char *names[ANIMATION_COUNT] = {"Hello"}; // Add screensaver names here
+
     gfx_SetColor(189);
 
     if (!option) {
@@ -39,6 +42,8 @@ void redraw(bool option, bool hookEnabled, uint8_t animation) {
     } else {
         gfx_PrintStringXY("No", 217, 64);
     }
+
+    gfx_PrintStringXY(names[animation], 204 - gfx_GetStringWidth(names[animation]) / 2, 89);
 }
 
 int main(void) {
@@ -54,9 +59,7 @@ int main(void) {
 
     bool option = false;
     bool hookEnabled = isHookInstalled();
-    uint8_t animation = 0;
-    ti_Read(&animation, sizeof(uint8_t), 1, slot);
-    ti_Close(slot);
+    uint8_t animation = *(uint8_t *)ti_GetDataPtr(slot);
 
     gfx_Begin();
     gfx_SetDrawBuffer();
@@ -95,12 +98,24 @@ int main(void) {
                 option = !option;
             }
 
-            if (!option) {
+            if (!option) { // Toggle screensaver hook on / off
                 if (kb_IsDown(kb_KeyLeft) || kb_IsDown(kb_KeyRight)) {
                     hookEnabled = !hookEnabled;
                 }
-            } else {
+            } else { // Select screensaver animation from list
+                if (kb_IsDown(kb_KeyLeft)) {
+                    if (animation) {
+                        animation--;
+                    } else {
+                        animation = ANIMATION_COUNT - 1;
+                    }
+                } else if (kb_IsDown(kb_KeyRight)) {
+                    animation++;
 
+                    if (animation == ANIMATION_COUNT) {
+                        animation = 0;
+                    }
+                }
             }
 
             redraw(option, hookEnabled, animation);
@@ -128,5 +143,14 @@ int main(void) {
     }
 
     gfx_End();
+
+    if (ti_IsArchived(slot)) {
+        ti_SetArchiveStatus(false, slot);
+    }
+
+    *(uint8_t *)ti_GetDataPtr(slot) = animation;
+    ti_SetArchiveStatus(true, slot);
+    ti_Close(slot);
+
     return 0;
 }
