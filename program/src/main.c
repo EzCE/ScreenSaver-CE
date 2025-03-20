@@ -133,15 +133,6 @@ int main(void) {
         kb_Scan();
     }
 
-    if (hookEnabled) {
-        installHook();
-    } else {
-        asm(
-            "ld iy,$D00080\n\t" // ld iy, ti.flags
-            "call $0213E4" // call ti.ClrGetKeyHook
-        );
-    }
-
     gfx_End();
 
     if (ti_IsArchived(slot)) {
@@ -151,6 +142,15 @@ int main(void) {
     *(uint8_t *)ti_GetDataPtr(slot) = animation;
     ti_SetArchiveStatus(true, slot);
     ti_Close(slot);
+
+    if (hookEnabled) {
+        installHook();
+    } else {
+        asm(
+            "ld iy,$D00080\n\t" // ld iy, ti.flags
+            "call $0213E4" // call ti.ClrGetKeyHook
+        );
+    }
 
     return 0;
 }
