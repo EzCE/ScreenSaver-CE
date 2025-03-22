@@ -12,7 +12,7 @@ int main(void) {
     uint8_t selected = *(uint8_t *)ti_GetDataPtr(slot);
     ti_Close(slot);
 
-    void (*animations[ANIMATION_COUNT]) (void) = {hello}; // Add animation functions here
+    static void (*animations[ANIMATION_COUNT]) (void) = {hello}; // Add animation functions here
     animations[selected]();
 
     return 0;

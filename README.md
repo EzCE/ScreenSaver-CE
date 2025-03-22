@@ -12,4 +12,6 @@ a function declaration for your new animaiton's launch function.
 
 Next, add the launch function to the `animations` array in
 **appvar/src/main.c**. Finally, add a string with the name of your new
-animation to the `names` array in **program/src/main.c**.
+animation to the `names` array in **program/src/main.c**, and a string with the
+author credited for the animation to the `authors` array in
+**program/src/main.c**.

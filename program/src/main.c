@@ -8,10 +8,23 @@
 #include <ti/getcsc.h>
 #include <ti/screen.h>
 
+// void noPreview(void) {
+//     gfx_SetColor(42);
+//     gfx_FillRectangle_NoClip(96, 131, 128, 96);
+//     gfx_PrintStringXY("No preview", 124, 173);
+// }
+
 void redraw(bool option, bool hookEnabled, uint8_t animation) {
     static const char *names[ANIMATION_COUNT] = {"Hello"}; // Add screensaver names here
+    static const char *authors[ANIMATION_COUNT] = {"TIny, RoccoLox"}; // Add screensaver authors here
+    // static void (*previews[ANIMATION_COUNT]) (void) = {helloPreview}; // Add screensaver previews here (WIP)
+
+    // previews[animation]();
+    // gfx_SetTextBGColor(10);
+    // gfx_SetTextScale(1, 1);
 
     gfx_SetColor(189);
+    gfx_SetTextBGColor(42);
 
     if (!option) {
         gfx_SetColor(255);
@@ -19,6 +32,7 @@ void redraw(bool option, bool hookEnabled, uint8_t animation) {
 
     gfx_Rectangle_NoClip(204, 62, 41, 11);
     gfx_SetColor(189);
+    // gfx_Rectangle_NoClip(96, 131, 128, 96);
 
     if (option) {
         gfx_SetColor(255);
@@ -44,6 +58,10 @@ void redraw(bool option, bool hookEnabled, uint8_t animation) {
     }
 
     gfx_PrintStringXY(names[animation], 204 - gfx_GetStringWidth(names[animation]) / 2, 89);
+    gfx_SetColor(10);
+    gfx_FillRectangle_NoClip(126, 115, 119, 8);
+    gfx_SetTextBGColor(10);
+    gfx_PrintStringXY(authors[animation], 245 - gfx_GetStringWidth(authors[animation]), 115);
 }
 
 int main(void) {
@@ -72,10 +90,10 @@ int main(void) {
     gfx_SetTextScale(1, 1);
     gfx_PrintStringXY("Enabled:", 75, 64);
     gfx_PrintStringXY("Animation:", 75, 89);
+    gfx_PrintStringXY("Author:", 75, 115);
     gfx_SetColor(189);
     gfx_HorizLine_NoClip(73, 54, 174);
     gfx_HorizLine_NoClip(73, 105, 174);
-    gfx_SetTextBGColor(42);
     redraw(option, hookEnabled, animation);
     gfx_BlitBuffer();
 
