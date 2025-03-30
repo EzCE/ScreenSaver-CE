@@ -10,4 +10,7 @@ clean:
 	@$(MAKE) -C appvar clean
 	@$(MAKE) -C program clean
 
-.PHONY: appvar program clean all
+gfx:
+	@$(MAKE) -C appvar gfx
+
+.PHONY: appvar program clean gfx all

@@ -1,5 +1,8 @@
 .vscode/
 bin/
 obj/
+appvar/src/gfx/*.c
+appvar/src/gfx/*.h
+*.yaml.lst
 
 appvar/hook/ANIMATE.asm

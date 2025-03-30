@@ -1,0 +1,42 @@
+palettes:
+  - name: palette_toaster
+    fixed-entries:
+      - color: {index: 0, hex: "#000000"}
+      - color: {index: 1, hex: "#F71C84"}
+    images: automatic
+  - name: palette_pipes
+    fixed-entries:
+      - color: {index: 0, hex: "#000000"}
+      - color: {index: 1, hex: "#800000"}
+      - color: {index: 2, hex: "#008000"}
+      - color: {index: 3, hex: "#808000"}
+      - color: {index: 4, hex: "#000080"}
+      - color: {index: 5, hex: "#800080"}
+      - color: {index: 6, hex: "#008080"}
+      - color: {index: 7, hex: "#C0C0C0"}
+
+converts:
+  - name: sprites_toaster
+    palette: palette_toaster
+    images:
+      - toasters/*.png
+  - name: sprites_pipes
+    palette: palette_pipes
+    images:
+      - pipes/*.png
+
+outputs:
+  - type: c
+    include-file: gfxtoasters.h
+    palettes:
+      - palette_toaster
+    converts:
+      - sprites_toaster
+  - type: c
+    const: false
+    include-file: gfxpipes.h
+    palettes:
+      - palette_pipes
+    converts:
+      - sprites_pipes
+
