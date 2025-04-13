@@ -1,3 +1,4 @@
+#include <fileioc.h>
 #include <graphx.h>
 #include <keypadc.h>
 #include <time.h>
@@ -70,7 +71,7 @@ void fish_generate(Fish* fish)
     }
 }
 
-bool fish_step(Fish* fishes, const uint8_t maxFish, uint8_t* backgroundColor)
+bool fish_step(Fish* fishes, const uint8_t maxFish)
 {
     for (uint8_t i = 0; i < maxFish; i += 1)
     {
@@ -202,7 +203,97 @@ void fish_draw(const Fish* fishes, const uint8_t maxFish, const uint8_t backgrou
     }
 }
 
-void fish(void) {
+#define APPVAR_NAME             "[FISH"
+#define HEADER_LENGTH           5
+#define VERSION_FIELD_LENGTH    1
+#define NUM_FISH_FIELD_LENGTH   1
+#define BG_COLOR_FIELD_LENGTH   1
+#define VERSION_NUM             11
+
+bool strnequ(char* src, char* dst, uint8_t len)
+{
+    for (uint8_t i = 0; i < len; i++)
+    {
+        if (src[i] != dst[i])
+            return false;
+    }
+
+    return true;
+}
+
+uint8_t fish_read(Fish* fishes, uint8_t* numFishes, uint8_t* backgroundColor)
+{
+    uint8_t var = ti_Open(APPVAR_NAME, "r");
+    if (var == 0)
+    {
+        ti_Close(var);
+        return 255;
+    }
+
+    if (ti_GetSize(var) <= HEADER_LENGTH + VERSION_FIELD_LENGTH + BG_COLOR_FIELD_LENGTH + NUM_FISH_FIELD_LENGTH)
+    {
+        ti_Close(var);
+        return 1;
+    }
+
+    char buffer[HEADER_LENGTH];
+    if (ti_Read(buffer, sizeof(char), HEADER_LENGTH, var) != HEADER_LENGTH)
+    {
+        ti_Close(var);
+        return 2;
+    }
+
+    if (!strnequ(buffer, APPVAR_NAME, HEADER_LENGTH))
+    {
+        ti_Close(var);
+        return 3;
+    }
+    
+    uint8_t versionRead;
+    if (ti_Read(&versionRead, sizeof(uint8_t), VERSION_FIELD_LENGTH, var) != VERSION_FIELD_LENGTH)
+    {
+        ti_Close(var);
+        return 4;
+    }
+    
+    if (versionRead != VERSION_NUM)
+    {
+        ti_Close(var);
+        return 5;
+    }
+
+    uint8_t backgroundColorRead;
+    if (ti_Read(&backgroundColorRead, sizeof(uint8_t), BG_COLOR_FIELD_LENGTH, var) != BG_COLOR_FIELD_LENGTH)
+    {
+        ti_Close(var);
+        return 6;
+    }
+
+    uint8_t numFishRead;
+    if (ti_Read(&numFishRead, sizeof(uint8_t), NUM_FISH_FIELD_LENGTH, var) != NUM_FISH_FIELD_LENGTH)
+    {
+        ti_Close(var);
+        return 7;
+    }
+
+    uint8_t actualAmountOfFishToRead = numFishRead <= (*numFishes) ? numFishRead : *numFishes;
+    
+    if (ti_Read(fishes, sizeof(Fish), numFishRead, var) != actualAmountOfFishToRead)
+    {
+        ti_Close(var);
+        return 8;
+    }
+    
+    *backgroundColor = backgroundColorRead;
+    *numFishes = numFishRead;
+    
+    ti_SetArchiveStatus(true, var);
+    ti_Close(var);
+    return 0;
+}
+
+void fish(void) 
+{
     gfx_Begin();
     gfx_SetDrawBuffer();
 
@@ -211,12 +302,18 @@ void fish(void) {
     Fish fishes[MAX_FISH];
     uint8_t backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
-    for (uint8_t i = 0; i < MAX_FISH; i++)
-        fish_generate(&fishes[i]);
-
-    while (fish_step(fishes, MAX_FISH, &backgroundColor))
+    uint8_t maxFish = MAX_FISH;
+    uint8_t readResult = fish_read(fishes, &maxFish, &backgroundColor);
+    if (readResult) 
     {
-        fish_draw(fishes, MAX_FISH, backgroundColor);
+        maxFish = MAX_FISH;
+        for (uint8_t i = 0; i < MAX_FISH; i++)
+            fish_generate(&fishes[i]);
+    }
+
+    while (fish_step(fishes, maxFish))
+    {
+        fish_draw(fishes, maxFish, backgroundColor);
         gfx_SwapDraw();
     }
 
