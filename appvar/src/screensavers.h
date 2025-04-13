@@ -19,7 +19,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     3
+#define ANIMATION_COUNT     4
 
 /**
  * Placeholder hello world.
@@ -35,6 +35,11 @@ void toasters(void);
  * Pipes.
  */
 void pipes(void);
+
+/**
+ * Fish.
+ */
+void fish(void);
 
 #ifdef __cplusplus
 }
