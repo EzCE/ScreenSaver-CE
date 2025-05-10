@@ -1,16 +1,16 @@
-all: appvar program
+all: animations app
 
-appvar:
-	@$(MAKE) -C appvar all
+animations:
+	@$(MAKE) -C animations all
 
-program:
-	@$(MAKE) -C program all
+app:
+	@$(MAKE) -C app
 
 clean:
-	@$(MAKE) -C appvar clean
-	@$(MAKE) -C program clean
+	@$(MAKE) -C animations clean
+	@$(MAKE) -C app clean
 
 gfx:
-	@$(MAKE) -C appvar gfx
+	@$(MAKE) -C animations gfx
 
-.PHONY: appvar program clean gfx all
+.PHONY: animations app clean gfx all

@@ -1,5 +1,5 @@
 #include "asm/utils.h"
-#include "../../appvar/src/screensavers.h"
+#include "../../animations/src/screensavers.h"
 
 #include <fileioc.h>
 #include <graphx.h>
@@ -66,18 +66,16 @@ void redraw(bool option, bool hookEnabled, uint8_t animation) {
 
 int main(void) {
     uint8_t slot = ti_Open("ScrnSavr", "r");
+    uint8_t animation = 0;
 
-    if (!slot) {
-        ti_Close(slot);
-        os_ClrHomeFull();
-        os_PutStrLine("ScrnSavr AppVar not found.");
-        while (!os_GetCSC());
-        return 0;
+    if (slot) {
+        ti_Read(&animation, sizeof(uint8_t), 1, slot);
     }
+
+    ti_Close(slot);
 
     bool option = false;
     bool hookEnabled = isHookInstalled();
-    uint8_t animation = *(uint8_t *)ti_GetDataPtr(slot);
 
     gfx_Begin();
     gfx_SetDrawBuffer();
@@ -153,11 +151,8 @@ int main(void) {
 
     gfx_End();
 
-    if (ti_IsArchived(slot)) {
-        ti_SetArchiveStatus(false, slot);
-    }
-
-    *(uint8_t *)ti_GetDataPtr(slot) = animation;
+    slot = ti_Open("ScrnSavr", "w");
+    ti_Write(&animation, sizeof(uint8_t), 1, slot);
     ti_SetArchiveStatus(true, slot);
     ti_Close(slot);
 

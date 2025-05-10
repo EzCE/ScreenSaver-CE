@@ -1,7 +1,10 @@
-include 'include/ez80.inc'
-include 'include/tiformat.inc'
-format ti archived appvar 'ScrnSavr'
+    assume adl=1
+
+    section .text
+
 include 'include/ti84pceg.inc'
+
+    public hookStart
 
 ;---------------------------------
 
@@ -22,10 +25,7 @@ end macro
 
 ;---------------------------------
 
-screenSaverValue:
-    db 0
-
-hookStrart:
+hookStart:
     db $83
     set ti.apdAble, (iy + ti.apdFlags)
     cp a, $1B
@@ -70,23 +70,13 @@ continueHook:
     push ix
     call ti.CleanAll
     call ti.DeleteTempPrograms
-    ld hl, (ti.getKeyHookPtr)
-    ld de, tempProg - hookStrart
-    add hl, de
+    ld hl, tempProg
     call ti.Mov9ToOP1
     ld hl, screenBackupSize + statusBarBackupSize
     ld a, ti.TempProgObj
     call ti.CreateVar
     inc de
     inc de
-    push de
-    ld hl, (ti.getKeyHookPtr)
-    ld de, pixelShadow2Data - hookStrart
-    add hl, de
-    ld de, ti.pixelShadow2
-    ld bc, hookEnd - storeScreen
-    ldir
-    pop de
     ld hl, ti.vRam + ((ti.lcdWidth * 2) * 30)
     ld bc, screenBackupSize
     call storeScreen
@@ -95,16 +85,13 @@ continueHook:
     ld (ti.asm_prgm_size), hl
     ld de, ti.userMem
     call ti.InsertMem
-    ld hl, (ti.getKeyHookPtr)
-    ld de, cProgExec - hookStrart + 2
-    add hl, de
+    ld hl, cProgExec + 2
     ld de, ti.userMem
     pop bc
     ldir
     ld hl, (ti.getKeyHookPtr)
     push hl
-    ld de, errorHandler - hookStrart
-    add hl, de
+    ld hl, errorHandler
     call ti.PushErrorHandler
     call ti.ClrGetKeyHook
     call ti.userMem
@@ -150,13 +137,7 @@ errorHandler:
     ld (ti.asm_prgm_size), hl
     ld hl, ti.userMem
     call ti.DelMem
-    ld hl, (ti.getKeyHookPtr)
-    ld de, pixelShadow2Data - hookStrart
-    add hl, de
-    ld de, ti.pixelShadow2
-    ld bc, hookEnd - storeScreen
-    ldir
-    call ti.pixelShadow2 + (findRestoreProgram - storeScreen)
+    call findRestoreProgram
     ld hl, ti.mpLcdCtrl
     ld de, ti.lcdNormalMode
     ld (hl), de
@@ -178,9 +159,7 @@ errorHandler:
     ld (hookBackup), hl
 
 setHook:
-    ld hl, (ti.getKeyHookPtr)
-    ld de, rawKeyHook - hookStrart
-    add hl, de
+    ld hl, rawKeyHook
     call ti.SetGetKeyHook
     set 7, (iy + ti.asm_Flag2)
     xor a, a
@@ -200,11 +179,8 @@ tempProg:
     db ti.TempProgObj, "Screen", 0
 
 cProgExec:
-    include 'hook/ANIMATE.asm'
+    include 'ANIMATE.asm'
 cProgSize := $ - cProgExec
-
-pixelShadow2Data:
-    org ti.pixelShadow2
 
 storeScreen:
     push de
@@ -267,9 +243,7 @@ findRestoreProgram:
     ld (ti.mpLcdIcr), a
     spi $B0, $01 ; disable framebuffer copies
     spi $2C
-    ld hl, (ti.getKeyHookPtr)
-    ld de, tempProg - hookStrart
-    add hl, de
+    ld hl, tempProg
     call ti.Mov9ToOP1
     call ti.ChkFindSym
     inc de
