@@ -19,7 +19,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     5
+#define ANIMATION_COUNT     7
 
 /**
  * Placeholder hello world.
@@ -45,6 +45,16 @@ void fish(void);
  * Rainbow walk.
  */
 void walk(void);
+
+/**
+ * Always-on display clock.
+ */
+void aod(void);
+
+/**
+ * Flipping tiles.
+ */
+void tiles(void);
 
 #ifdef __cplusplus
 }
