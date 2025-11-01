@@ -19,7 +19,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     7
+#define ANIMATION_COUNT     8
 
 /**
  * Placeholder hello world.
@@ -55,6 +55,11 @@ void aod(void);
  * Flipping tiles.
  */
 void tiles(void);
+
+/**
+ * Spirograph
+ */
+void spirograph(void);
 
 #ifdef __cplusplus
 }

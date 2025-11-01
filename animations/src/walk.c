@@ -7,7 +7,7 @@
 #include <sys/util.h>
 
 #include "palette.h"
-#include "turtle.h"
+#include "turtle/turtle.h"
 
 #define NUM_TURTLES 15
 #define ANGLE 6
@@ -29,7 +29,7 @@ void walk_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
 }
 
 void walk_walk(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
-    for (int i = 0; i < numTurtles; i++) {
+    for (uint8_t i = 0; i < numTurtles; i++) {
         Turtle* t = &turtles[i];
         Turtle_Left(t, ANGLE - random() % (ANGLE * 2));
         Turtle_Forward(t, random() % SPEED + SPEED);

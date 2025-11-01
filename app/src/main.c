@@ -15,8 +15,8 @@
 // }
 
 void redraw(bool option, bool hookEnabled, uint8_t animation) {
-    static const char *names[ANIMATION_COUNT] = {"Hello", "Toasters", "Pipes", "Fish", "Walk", "AOD", "Tiles"}; // Add screensaver names here
-    static const char *authors[ANIMATION_COUNT] = {"TIny, RoccoLox", "TIny, RoccoLox", "TIny, RoccoLox", "Merth", "Merth", "TIny, RoccoLox", "TIny, RoccoLox"}; // Add screensaver authors here
+    static const char *names[ANIMATION_COUNT] = {"Hello", "Toasters", "Pipes", "Fish", "Walk", "AOD", "Tiles", "Spirograph"}; // Add screensaver names here
+    static const char *authors[ANIMATION_COUNT] = {"TIny, RoccoLox", "TIny, RoccoLox", "TIny, RoccoLox", "Merth", "Merth", "TIny, RoccoLox", "TIny, RoccoLox", "Merth"}; // Add screensaver authors here
     // static void (*previews[ANIMATION_COUNT]) (void) = {helloPreview}; // Add screensaver previews here (WIP)
 
     // previews[animation]();

@@ -58,9 +58,10 @@ void move(Turtle* t, float newX, float newY)
 
 void Turtle_Forward(Turtle* t, float amount)
 {
-    int angle = (int)t->angle;
-    float deltaX = amount * sin(angle);
-    float deltaY = amount * -cos(angle);
+    float rad = t->angle * (M_PI / 180.0f);
+    
+    float deltaX = amount * sinf(rad);
+    float deltaY = amount * -cosf(rad);
 
     move(t, t->x + deltaX, t->y + deltaY);
 }
