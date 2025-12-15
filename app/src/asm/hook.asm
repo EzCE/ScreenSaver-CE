@@ -11,6 +11,7 @@ include 'include/ti84pceg.inc'
 screenBackupSize := (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
 statusBarBackupSize := (300 * 10) * 2
 hookBackup := ti.pixelShadow2
+returnVal := hookBackup + 3
 
 macro spi cmd, params&
     ld a, cmd
@@ -95,6 +96,7 @@ continueHook:
     call ti.PushErrorHandler
     call ti.ClrGetKeyHook
     call ti.userMem
+    ld (returnVal), hl
     call ti.PopErrorHandler
 
 errorHandler:
@@ -162,6 +164,20 @@ setHook:
     ld hl, rawKeyHook
     call ti.SetGetKeyHook
     set 7, (iy + ti.asm_Flag2)
+    ld hl, (returnVal)
+    bit 0, l
+    jr z, .exit
+    di
+    call ti.EnableAPD
+    ld a, 1
+    ld hl, ti.apdSubTimer
+    ld (hl), a
+    inc hl
+    ld (hl), a
+    set ti.apdRunning, (iy + ti.apdFlags)
+    ei
+
+.exit:
     xor a, a
     inc a
     ret

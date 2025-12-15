@@ -1,3 +1,5 @@
+#include "utility.h"
+
 #include "gfx/gfxtoasters.h"
 
 #include <graphx.h>
@@ -57,7 +59,7 @@ static void draw(struct object_t *object, const gfx_sprite_t **frames) {
     object->y += object->velocity;
 }
 
-void toasters(void) {
+bool toasters(void) {
     gfx_Begin();
     gfx_SetPalette(palette_toaster, sizeof_palette_toaster, 0);
     gfx_SetTransparentColor(1);
@@ -76,6 +78,11 @@ void toasters(void) {
     clock_t offset = clock();
 
     while (!kb_AnyKey()) {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
+
         gfx_ZeroScreen();
 
         bool frame = (clock() - offset > CLOCKS_PER_SEC / 8);
@@ -143,4 +150,6 @@ void toasters(void) {
     }
 
     gfx_End();
+
+    return false;
 }

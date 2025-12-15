@@ -1,3 +1,5 @@
+#include "utility.h"
+
 #include "gfx/gfxpipes.h"
 
 #include <graphx.h>
@@ -66,7 +68,7 @@ static void drawSegment(unsigned int x, uint8_t y, uint8_t direction, uint8_t ne
     gfx_Sprite((gfx_sprite_t *)tmpdat, x, y);
 }
 
-void pipes(void) {
+bool pipes(void) {
     gfx_Begin();
     gfx_SetPalette(palette_pipes, sizeof_palette_pipes, 0);
     gfx_ZeroScreen();
@@ -80,6 +82,11 @@ void pipes(void) {
     setPipeColor(randInt(1, 7));
 
     while (!kb_AnyKey()) {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
+
         if (randInt(0, 4)) {
             newDirection = direction;
         } else {
@@ -138,4 +145,6 @@ void pipes(void) {
     }
 
     gfx_End();
+
+    return false;
 }

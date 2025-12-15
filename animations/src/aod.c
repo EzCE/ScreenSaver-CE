@@ -1,3 +1,5 @@
+#include "utility.h"
+
 #include <graphx.h>
 #include <keypadc.h>
 
@@ -6,7 +8,7 @@
 
 #define M_PI 3.14159265358979323846
 
-void aod(void) {
+bool aod(void) {
     gfx_Begin();
     gfx_SetColor(255);
     gfx_SetDrawBuffer();
@@ -33,9 +35,12 @@ void aod(void) {
     gfx_SetTextFGColor(255);
     gfx_SetTextTransparentColor(0);
 
-    
-
     while (!kb_AnyKey()) {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
+
         gfx_SetColor(0);
         gfx_FillRectangle_NoClip(118, 78, 85, 85);
         gfx_SetColor(255);
@@ -50,4 +55,6 @@ void aod(void) {
     }
 
     gfx_End();
+
+    return false;
 }
