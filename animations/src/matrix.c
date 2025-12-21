@@ -7,6 +7,7 @@
 #include <sys/rtc.h>
 #include <sys/util.h>
 
+#include "utility.h"
 #include "fonts/matrix_font.h"
 
 #define MATRIX_TRAIL_LENGTH 12
@@ -25,7 +26,7 @@ static void draw_matrix_glyph(uint8_t tileIndex, uint8_t paletteIndex, int16_t x
     fontlib_DrawGlyph(tileIndex);
 }
 
-void matrix(void) {
+bool matrix(void) {
     gfx_Begin();
     gfx_SetDrawBuffer();
     
@@ -56,6 +57,12 @@ void matrix(void) {
     fontlib_SetColors(1, 0);
     
     while (!kb_IsDown(kb_KeyClear)) {
+        if (utility_ChkAPDTimer()) {
+            free(drops);
+            gfx_End();
+            return true;
+        }
+        
         gfx_ZeroScreen();
 
         for (uint8_t i = 0; i < cols; i++) {
@@ -92,4 +99,6 @@ void matrix(void) {
 
     free(drops);
     gfx_End();
+
+    return false;
 }

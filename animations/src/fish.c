@@ -6,6 +6,8 @@
 #include <sys/rtc.h>
 #include <sys/util.h>
 
+#include "utility.h"
+
 typedef enum FishDirection { fd_Right, fd_Left } FishDirection;
 
 typedef struct Fish {
@@ -292,7 +294,7 @@ uint8_t fish_read(Fish* fishes, uint8_t* numFishes, uint8_t* backgroundColor)
     return 0;
 }
 
-void fish(void) 
+bool fish(void) 
 {
     gfx_Begin();
     gfx_SetDrawBuffer();
@@ -313,9 +315,14 @@ void fish(void)
 
     while (fish_step(fishes, maxFish))
     {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
         fish_draw(fishes, maxFish, backgroundColor);
         gfx_SwapDraw();
     }
 
     gfx_End();
+    return false;
 }

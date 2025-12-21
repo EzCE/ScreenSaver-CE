@@ -7,6 +7,7 @@
 #include <sys/rtc.h>
 #include <sys/util.h>
 
+#include "utility.h"
 #include "palette.h"
 #include "turtle/turtle.h"
 
@@ -117,7 +118,7 @@ void spiro_spiro(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
 }
 
 
-void spirograph(void) {
+bool spirograph(void) {
     gfx_Begin();
     gfx_FillScreen(0);
 
@@ -131,6 +132,11 @@ void spirograph(void) {
     
     uint8_t counter = 0;
     while (!kb_AnyKey()) {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
+
         if (counter == 0)
         {
             counter = 150;
@@ -143,4 +149,5 @@ void spirograph(void) {
     }
 
     gfx_End();
+    return false;
 }

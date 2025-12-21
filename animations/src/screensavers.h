@@ -41,12 +41,12 @@ bool pipes(void);
 /**
  * Fish.
  */
-void fish(void);
+bool fish(void);
 
 /**
  * Rainbow walk.
  */
-void walk(void);
+bool walk(void);
 
 /**
  * Always-on display clock.
@@ -61,12 +61,12 @@ bool tiles(void);
 /**
  * Spirograph
  */
-void spirograph(void);
+bool spirograph(void);
 
 /**
  * Matrix rain.
  */
-void matrix(void);
+bool matrix(void);
 
 #ifdef __cplusplus
 }

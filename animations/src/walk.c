@@ -6,6 +6,7 @@
 #include <sys/rtc.h>
 #include <sys/util.h>
 
+#include "utility.h"
 #include "palette.h"
 #include "turtle/turtle.h"
 
@@ -43,7 +44,7 @@ void walk_walk(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     }
 }
 
-void walk(void) {
+bool walk(void) {
     gfx_Begin();
     gfx_FillScreen(0);
 
@@ -58,6 +59,11 @@ void walk(void) {
     
     uint8_t counter = 0;
     while (!kb_AnyKey()) {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
+
         walk_walk(NUM_TURTLES, turtles);
         palette_shift(gfx_palette);
         counter++;
@@ -66,4 +72,5 @@ void walk(void) {
     }
 
     gfx_End();
+    return false;
 }
