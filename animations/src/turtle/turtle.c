@@ -3,7 +3,6 @@
 #include <math.h>
 #include <graphx.h>
 #include <string.h>
-#include <debug.h>
 
 #include "turtle.h"
 
