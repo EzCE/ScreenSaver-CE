@@ -19,7 +19,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     8
+#define ANIMATION_COUNT     9
 
 /**
  * Placeholder hello world.
@@ -60,6 +60,11 @@ void tiles(void);
  * Spirograph
  */
 void spirograph(void);
+
+/**
+ * Matrix rain.
+ */
+void matrix(void);
 
 #ifdef __cplusplus
 }
