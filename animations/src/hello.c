@@ -1,7 +1,9 @@
+#include "utility.h"
+
 #include <graphx.h>
 #include <keypadc.h>
 
-void hello(void) {
+bool hello(void) {
     gfx_Begin();
     gfx_ZeroScreen();
 
@@ -10,7 +12,13 @@ void hello(void) {
     gfx_SetTextFGColor(255);
     gfx_PrintString("Hello world!");
 
-    while (!kb_AnyKey());
+    while (!kb_AnyKey()) {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
+    }
 
     gfx_End();
+    return false;
 }

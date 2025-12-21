@@ -12,8 +12,7 @@ int main(void) {
     uint8_t selected = *(uint8_t *)ti_GetDataPtr(slot);
     ti_Close(slot);
 
-    static void (*animations[ANIMATION_COUNT]) (void) = {hello, toasters, pipes, fish, walk, aod, tiles, spirograph, matrix}; // Add animation functions here
-    animations[selected]();
+    static bool (*animations[ANIMATION_COUNT]) (void) = {hello, toasters, pipes, fish, walk, aod, tiles, spirograph}; // Add animation functions here
 
-    return 0;
+    return animations[selected]();
 }

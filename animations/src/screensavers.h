@@ -12,6 +12,8 @@
 #ifndef SCREENSAVERS_H
 #define SCREENSAVERS_H
 
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,17 +26,17 @@ extern "C" {
 /**
  * Placeholder hello world.
  */
-void hello(void);
+bool hello(void);
 
 /**
  * Flying toasters!
  */
-void toasters(void);
+bool toasters(void);
 
 /**
  * Pipes.
  */
-void pipes(void);
+bool pipes(void);
 
 /**
  * Fish.
@@ -49,12 +51,12 @@ void walk(void);
 /**
  * Always-on display clock.
  */
-void aod(void);
+bool aod(void);
 
 /**
  * Flipping tiles.
  */
-void tiles(void);
+bool tiles(void);
 
 /**
  * Spirograph

@@ -1,3 +1,5 @@
+#include "utility.h"
+
 #include "gfx/gfxtiles.h"
 
 #include <graphx.h>
@@ -70,7 +72,7 @@ void flip(int x, int y) {
     }
 }
 
-void tiles(void) {
+bool tiles(void) {
     gfx_Begin();
     // gfx_SetPalette(palette_tiles, sizeof_palette_tiles, 0);
     gfx_ZeroScreen();
@@ -78,6 +80,11 @@ void tiles(void) {
     gfx_SetDrawBuffer();
 
     while (!kb_AnyKey()) {
+        if (utility_ChkAPDTimer()) {
+            gfx_End();
+            return true;
+        }
+
         int x = randInt(0, 15) * 20;
         int y = randInt(0, 11) * 20;
 
@@ -86,4 +93,6 @@ void tiles(void) {
     }
 
     gfx_End();
+
+    return false;
 }
