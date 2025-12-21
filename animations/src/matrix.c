@@ -13,6 +13,8 @@
 #define MATRIX_TRAIL_LENGTH 12
 #define MATRIX_NUM_GLYPHS 135
 #define MATRIX_GET_GLYPH() (randInt(0, MATRIX_NUM_GLYPHS-1))
+#define MATRIX_NUM_COLS 20
+#define MATRIX_NUM_ROWS 15
 
 typedef struct {
     uint8_t row;
@@ -33,14 +35,15 @@ bool matrix(void) {
     fontlib_SetFont(matrix_font, 0);
     fontlib_SetWindowFullScreen();
     srand(rtc_Time());
-
+    
     const uint8_t tileWidth = 16;
     const uint8_t tileHeight = 16;
 
-    const uint8_t cols = GFX_LCD_WIDTH / tileWidth;
-    const uint8_t rows = GFX_LCD_HEIGHT / tileHeight;
+    const uint8_t cols = MATRIX_NUM_COLS;
+    const uint8_t rows = MATRIX_NUM_ROWS;
 
-    MatrixDrop* drops = malloc(cols * sizeof(MatrixDrop));
+    MatrixDrop drops[MATRIX_NUM_COLS];
+
     for (uint8_t i = 0; i < cols; i++) {
         drops[i].row = randInt(0, rows);
         drops[i].tileIndex = MATRIX_GET_GLYPH();
@@ -50,15 +53,12 @@ bool matrix(void) {
     }
 
     gfx_palette[0] = 0;
-
     for (uint16_t i = 1; i < 256; i++)
         gfx_palette[i] = gfx_RGBTo1555(0, 256 - i, 0);
-    
     fontlib_SetColors(1, 0);
-    
-    while (!kb_IsDown(kb_KeyClear)) {
+
+    while (!kb_AnyKey()) {
         if (utility_ChkAPDTimer()) {
-            free(drops);
             gfx_End();
             return true;
         }
@@ -97,7 +97,6 @@ bool matrix(void) {
         gfx_SwapDraw();
     }
 
-    free(drops);
     gfx_End();
 
     return false;
