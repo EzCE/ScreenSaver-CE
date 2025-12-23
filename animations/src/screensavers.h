@@ -21,12 +21,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     9
-
-/**
- * Placeholder hello world.
- */
-bool hello(void);
+#define ANIMATION_COUNT     8
 
 /**
  * Flying toasters!
