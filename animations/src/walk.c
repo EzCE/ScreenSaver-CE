@@ -11,8 +11,8 @@
 #include "turtle/turtle.h"
 
 #define NUM_TURTLES 15
-#define ANGLE 6
-#define SPEED 9
+#define ANGLE 360
+#define SPEED 10
 
 void walk_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     for (uint8_t i = 0; i < numTurtles; i++) {
@@ -32,7 +32,7 @@ void walk_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
 void walk_walk(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     for (uint8_t i = 0; i < numTurtles; i++) {
         Turtle* t = &turtles[i];
-        Turtle_Left(t, ANGLE - random() % (ANGLE * 2));
+        Turtle_Left(t, random() % ANGLE);
         Turtle_Forward(t, random() % SPEED + SPEED);
 
         if (t->x >= 0 && t->x < GFX_LCD_WIDTH
