@@ -21,7 +21,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     9
+#define ANIMATION_COUNT     10
 
 /**
  * Placeholder hello world.
@@ -67,6 +67,11 @@ bool spirograph(void);
  * Matrix rain.
  */
 bool matrix(void);
+
+/**
+ * Triss
+ */
+bool triss(void);
 
 #ifdef __cplusplus
 }
