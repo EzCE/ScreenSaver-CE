@@ -12,7 +12,11 @@ int main(void) {
     uint8_t selected = *(uint8_t *)ti_GetDataPtr(slot);
     ti_Close(slot);
 
-    static bool (*animations[ANIMATION_COUNT]) (void) = {hello, toasters, pipes, fish, walk, aod, tiles, spirograph, matrix, triss}; // Add animation functions here
+    if (!slot || selected >= ANIMATION_COUNT) {
+        return 1; // Turn off if AppVar is invalid
+    }
+
+    static bool (*animations[ANIMATION_COUNT]) (void) = {toasters, pipes, fish, walk, aod, tiles, spirograph, matrix, triss}; // Add animation functions here
 
     return animations[selected]();
 }

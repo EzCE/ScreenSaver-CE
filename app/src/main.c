@@ -34,9 +34,9 @@ void drawButtonBG(unsigned int x, uint8_t y, uint8_t width, bool selected) {
 }
 
 void redraw(uint8_t option, bool hookEnabled, uint8_t animation, uint8_t apdTimer) {
-    static const char *names[ANIMATION_COUNT] = {"Hello", "Toasters", "Pipes", "Fish", "Walk", "Clock", "Tiles", "Spiral", "Matrix", "Triss"}; // Add screensaver names here
-    static const char *authors[ANIMATION_COUNT] = {"TIny, RoccoLox", "TIny, RoccoLox", "TIny, RoccoLox", "Merth", "Merth", "TIny, RoccoLox", "TIny, RoccoLox", "Merth", "Merth, v3x3d", "Merth"}; // Add screensaver authors here
-    // static void (*previews[ANIMATION_COUNT]) (void) = {helloPreview}; // Add screensaver previews here (WIP)
+    static const char *names[ANIMATION_COUNT] = {"Toasters", "Pipes", "Fish", "Walk", "Clock", "Tiles", "Spiral", "Matrix", "Triss"}; // Add screensaver names here
+    static const char *authors[ANIMATION_COUNT] = {"TIny, RoccoLox", "TIny, RoccoLox", "Merth", "Merth", "TIny, RoccoLox", "TIny, RoccoLox", "Merth", "Merth, v3x3d", "Merth"}; // Add screensaver authors here
+    // static void (*previews[ANIMATION_COUNT]) (void) = {}; // Add screensaver previews here (WIP)
 
     // previews[animation]();
     // gfx_SetTextBGColor(10);
