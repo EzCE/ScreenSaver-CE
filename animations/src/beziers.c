@@ -79,6 +79,7 @@ void bezier_draw_curve(const Bezier *curve) {
         int16_t x = (b0 * curve->x0 + b1 * curve->x1 + b2 * curve->x2 + b3 * curve->x3 + b4 * curve->x4 + b5 * curve->x5) >> 8;
         int16_t y = (b0 * curve->y0 + b1 * curve->y1 + b2 * curve->y2 + b3 * curve->y3 + b4 * curve->y4 + b5 * curve->y5) >> 8;
         
+        gfx_SetColor((curve->color + i*7) % 256 + 1);
         gfx_Line(prevX, prevY, x, y);
         prevX = x;
         prevY = y;
@@ -87,7 +88,6 @@ void bezier_draw_curve(const Bezier *curve) {
 
 void bezier_draw(const uint8_t numCurves, Bezier curves[numCurves]) {
     for (int8_t i = numCurves - 1; i >= 0; i--) {
-        gfx_SetColor(curves[i].color);
         bezier_draw_curve(&curves[i]);
     }
 }
