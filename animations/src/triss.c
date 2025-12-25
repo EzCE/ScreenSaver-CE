@@ -46,7 +46,7 @@ void triss_draw(const uint8_t numTris, Triangle tris[numTris]) {
     }
 }
 
-void update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
+void triss_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
     if (*x + *dx >= GFX_LCD_WIDTH || *x + *dx <= 0) 
         *dx = -*dx;
     *x += *dx;
@@ -71,9 +71,9 @@ void triss_update(const uint8_t numTris, Triangle tris[numTris],
         tris[i].color = tris[i - 1].color - 10;
     }
 
-    update_point(&tris[0].x1, &tris[0].y1, dx1, dy1);
-    update_point(&tris[0].x2, &tris[0].y2, dx2, dy2);
-    update_point(&tris[0].x3, &tris[0].y3, dx3, dy3);
+    triss_update_point(&tris[0].x1, &tris[0].y1, dx1, dy1);
+    triss_update_point(&tris[0].x2, &tris[0].y2, dx2, dy2);
+    triss_update_point(&tris[0].x3, &tris[0].y3, dx3, dy3);
 }
 
 bool triss(void) {

@@ -16,7 +16,7 @@ int main(void) {
         return 1; // Turn off if AppVar is invalid
     }
 
-    static bool (*animations[ANIMATION_COUNT]) (void) = {toasters, pipes, fish, walk, aod, tiles, spirograph, matrix, triss}; // Add animation functions here
+    static bool (*animations[ANIMATION_COUNT]) (void) = {toasters, pipes, fish, walk, aod, tiles, spirograph, matrix, triss, merth}; // Add animation functions here
 
     return animations[selected]();
 }

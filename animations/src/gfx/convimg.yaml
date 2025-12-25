@@ -24,6 +24,10 @@ palettes:
       - color: {index: 5, hex: "#E02C6D"}
       - color: {index: 6, hex: "#0AAEB3"}
       - color: {index: 7, hex: "#BAA67F"}
+  - name: palette_merth
+    fixed-entries:
+      - color: {index: 0, hex: "#000000"}
+    images: automatic
 
 converts:
   - name: sprites_toaster
@@ -34,6 +38,10 @@ converts:
     palette: palette_pipes
     images:
       - pipes/*.png
+  - name: merth_sprite
+    palette: palette_merth
+    images:
+      - merth/merth_face.bmp
 
 outputs:
   - type: c
@@ -54,3 +62,10 @@ outputs:
     include-file: gfxtiles.h
     palettes:
       - palette_tiles
+  - type: c
+    const: false
+    include-file: gfxmerth.h
+    converts:
+      - merth_sprite
+    palettes:
+      - palette_merth
