@@ -1,5 +1,7 @@
 #include "palette.h"
 
+#include <string.h>
+
 uint16_t HsvToRgb(uint8_t h, uint8_t s, uint8_t v)
 {
     uint8_t r = 0;
@@ -49,8 +51,7 @@ uint16_t HsvToRgb(uint8_t h, uint8_t s, uint8_t v)
 void palette_shift(uint16_t* palette)
 {
     palette[255] = palette[1];
-    for (int i = 1; i < 255; i++)
-        palette[i] = palette[i+1];
+    memmove(&palette[1], &palette[2], 254 * sizeof(uint16_t));
 }
 
 void palette_rainbow(uint16_t* palette)
