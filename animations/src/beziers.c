@@ -29,8 +29,8 @@ void bezier_init(const uint8_t numCurves, Bezier curves[numCurves]) {
     curves[0].y2 = random() % GFX_LCD_HEIGHT;
     curves[0].x3 = random() % GFX_LCD_WIDTH;
     curves[0].y3 = random() % GFX_LCD_HEIGHT;
-    curves[0].x4 = random() % GFX_LCD_WIDTH;
-    curves[0].y4 = random() % GFX_LCD_HEIGHT;
+    curves[0].x4 = curves[0].x0;
+    curves[0].y4 = curves[0].y0;
     curves[0].color = random() % 255 + 1;
     
     for (uint8_t i = 1; i < numCurves; i++) {
@@ -75,8 +75,6 @@ void bezier_draw_curve(const Bezier *curve) {
         prevX = x;
         prevY = y;
     }
-    
-    gfx_Line(prevX, prevY, curve->x0, curve->y0);
 }
 
 void bezier_draw(const uint8_t numCurves, Bezier curves[numCurves]) {
@@ -137,11 +135,11 @@ bool beziers(void) {
 
     gfx_SetDrawScreen();
 
-    int16_t dx0 = (random() % 4 + 1) * 2; 
-    int16_t dy0 = (random() % 4 + 1) * 2; 
+    int16_t dx0 = (random() % 4 + 1) * 2;
+    int16_t dy0 = (random() % 4 + 1) * 2;
     
-    int16_t dx1 = (random() % 4 + 1) * 2; 
-    int16_t dy1 = (random() % 4 + 1) * 2; 
+    int16_t dx1 = (random() % 4 + 1) * 2;
+    int16_t dy1 = (random() % 4 + 1) * 2;
     
     int16_t dx2 = (random() % 4 + 1) * 2; 
     int16_t dy2 = (random() % 4 + 1) * 2;
@@ -149,8 +147,8 @@ bool beziers(void) {
     int16_t dx3 = (random() % 4 + 1) * 2; 
     int16_t dy3 = (random() % 4 + 1) * 2;
 
-    int16_t dx4 = (random() % 4 + 1) * 2; 
-    int16_t dy4 = (random() % 4 + 1) * 2;
+    int16_t dx4 = dx0;
+    int16_t dy4 = dy0;
 
     while (!kb_AnyKey()) {
         if (utility_ChkAPDTimer()) {
