@@ -21,7 +21,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     9
+#define ANIMATION_COUNT     10
 
 /**
  * Flying toasters!
@@ -67,6 +67,11 @@ bool matrix(void);
  * Triss
  */
 bool triss(void);
+
+/**
+ * Bouncing Merth face.
+ */
+bool merth(void);
 
 #ifdef __cplusplus
 }
