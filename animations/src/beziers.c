@@ -10,7 +10,7 @@
 #include "palette.h"
 
 #define NUM_CURVES 3
-#define BEZIER_SEGMENTS 28
+#define BEZIER_SEGMENTS 12
 
 typedef struct Bezier {
     uint16_t x0, y0;
