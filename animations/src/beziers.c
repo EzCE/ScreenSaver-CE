@@ -8,8 +8,8 @@
 #include "utility.h"
 #include "palette.h"
 
-#define NUM_CURVES 9
-#define BEZIER_SEGMENTS 14
+#define NUM_CURVES 7
+#define BEZIER_SEGMENTS 12
 
 typedef struct Bezier {
     uint16_t x0, y0;
@@ -122,6 +122,8 @@ void bezier_update(const uint8_t numCurves, Bezier curves[numCurves],
     bezier_update_point(&curves[0].x4, &curves[0].y4, dx4, dy4);
 }
 
+#define BEZIER_NEW_POINT() (int16_t)((random() % 4 + 1) * 2.5f)
+
 bool beziers(void) {
     gfx_Begin();
     gfx_FillScreen(0);
@@ -135,17 +137,17 @@ bool beziers(void) {
 
     gfx_SetDrawScreen();
 
-    int16_t dx0 = (random() % 4 + 1) * 2;
-    int16_t dy0 = (random() % 4 + 1) * 2;
+    int16_t dx0 = BEZIER_NEW_POINT();
+    int16_t dy0 = BEZIER_NEW_POINT();
     
-    int16_t dx1 = (random() % 4 + 1) * 2;
-    int16_t dy1 = (random() % 4 + 1) * 2;
+    int16_t dx1 = BEZIER_NEW_POINT();
+    int16_t dy1 = BEZIER_NEW_POINT();
     
-    int16_t dx2 = (random() % 4 + 1) * 2; 
-    int16_t dy2 = (random() % 4 + 1) * 2;
+    int16_t dx2 = BEZIER_NEW_POINT(); 
+    int16_t dy2 = BEZIER_NEW_POINT();
 
-    int16_t dx3 = (random() % 4 + 1) * 2; 
-    int16_t dy3 = (random() % 4 + 1) * 2;
+    int16_t dx3 = BEZIER_NEW_POINT(); 
+    int16_t dy3 = BEZIER_NEW_POINT();
 
     int16_t dx4 = dx0;
     int16_t dy4 = dy0;
