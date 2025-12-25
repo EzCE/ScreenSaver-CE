@@ -1,5 +1,6 @@
 #include <graphx.h>
 #include <keypadc.h>
+#include <string.h>
 #include <time.h>
 
 #include <sys/rtc.h>
@@ -9,7 +10,7 @@
 #include "palette.h"
 
 #define NUM_CURVES 3
-#define BEZIER_SEGMENTS 32
+#define BEZIER_SEGMENTS 28
 
 typedef struct Bezier {
     uint16_t x0, y0;
@@ -79,7 +80,7 @@ void bezier_draw_curve(const Bezier *curve) {
         int16_t x = (b0 * curve->x0 + b1 * curve->x1 + b2 * curve->x2 + b3 * curve->x3 + b4 * curve->x4 + b5 * curve->x5) >> 8;
         int16_t y = (b0 * curve->y0 + b1 * curve->y1 + b2 * curve->y2 + b3 * curve->y3 + b4 * curve->y4 + b5 * curve->y5) >> 8;
         
-        gfx_SetColor((curve->color + i*7) % 256 + 1);
+        gfx_SetColor((curve->color + i*10) % 256 + 1);
         gfx_Line(prevX, prevY, x, y);
         prevX = x;
         prevY = y;
@@ -122,21 +123,7 @@ void bezier_update(const uint8_t numCurves, Bezier curves[numCurves],
     int16_t *dx4, int16_t *dy4,
     int16_t *dx5, int16_t *dy5) {
 
-    for (int i = numCurves - 1; i > 0; i--) {
-        curves[i].x0 = curves[i - 1].x0;
-        curves[i].y0 = curves[i - 1].y0;
-        curves[i].x1 = curves[i - 1].x1;
-        curves[i].y1 = curves[i - 1].y1;
-        curves[i].x2 = curves[i - 1].x2;
-        curves[i].y2 = curves[i - 1].y2;
-        curves[i].x3 = curves[i - 1].x3;
-        curves[i].y3 = curves[i - 1].y3;
-        curves[i].x4 = curves[i - 1].x4;
-        curves[i].y4 = curves[i - 1].y4;
-        curves[i].x5 = curves[i - 1].x5;
-        curves[i].y5 = curves[i - 1].y5;
-        curves[i].color = curves[i - 1].color - 10;
-    }
+    memmove(&curves[1], &curves[0], (numCurves - 1) * sizeof(Bezier));
 
     bezier_update_point(&curves[0].x0, &curves[0].y0, dx0, dy0);
     bezier_update_point(&curves[0].x1, &curves[0].y1, dx1, dy1);
@@ -197,6 +184,8 @@ bool beziers(void) {
             &dx4, &dy4,
             &dx5, &dy5
         );
+        palette_shift(gfx_palette);
+        palette_shift(gfx_palette);
         palette_shift(gfx_palette);
         
         gfx_SwapDraw();
