@@ -78,7 +78,7 @@ void triss_update(const uint8_t numTris, Triangle tris[numTris],
 
 bool triss(void) {
     gfx_Begin();
-    gfx_FillScreen(0);
+    gfx_ZeroScreen();
 
     gfx_palette[0] = 0;
     palette_rainbow(gfx_palette);
