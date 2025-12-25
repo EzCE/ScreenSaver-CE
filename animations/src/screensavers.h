@@ -21,7 +21,7 @@ extern "C" {
 /**
  * Number of screensaver animations.
  */
-#define ANIMATION_COUNT     11
+#define ANIMATION_COUNT     12
 
 /**
  * Flying toasters!
@@ -77,6 +77,11 @@ bool merth(void);
  * Beziers.
  */
 bool beziers(void);
+
+/**
+ * Falling snow.
+ */
+bool snow(void);
 
 #ifdef __cplusplus
 }

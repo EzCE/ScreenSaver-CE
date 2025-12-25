@@ -21,7 +21,7 @@ typedef struct Fish {
 } Fish;
 
 #define MAX_FISH 15
-#define DEFAULT_BACKGROUND_COLOR 24
+#define DEFAULT_BACKGROUND_COLOR 0
 
 #define MAX_WIDTH 20
 #define MIN_WIDTH 4
