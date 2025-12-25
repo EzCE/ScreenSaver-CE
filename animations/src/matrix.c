@@ -19,6 +19,7 @@
 typedef struct {
     uint8_t row;
     uint8_t tileIndex;
+    uint8_t numTrails;
     uint8_t trail[MATRIX_TRAIL_LENGTH];
 } MatrixDrop;
 
@@ -47,7 +48,8 @@ bool matrix(void) {
     for (uint8_t i = 0; i < cols; i++) {
         drops[i].row = randInt(0, rows);
         drops[i].tileIndex = MATRIX_GET_GLYPH();
-        for (uint8_t t = 0; t < MATRIX_TRAIL_LENGTH; t++) {
+        drops[i].numTrails = randInt(MATRIX_TRAIL_LENGTH / 2, MATRIX_TRAIL_LENGTH);
+        for (uint8_t t = 0; t < drops[i].numTrails; t++) {
             drops[i].trail[t] = MATRIX_GET_GLYPH();
         }
     }
@@ -69,8 +71,8 @@ bool matrix(void) {
             int16_t x = i * tileWidth;
             int16_t headY = (drops[i].row * tileHeight) % GFX_LCD_HEIGHT;
 
-            for (uint8_t t = 0; t < MATRIX_TRAIL_LENGTH; t++) {
-                uint8_t paletteIndex = 1 + (uint8_t)(((uint16_t)(t + 1) * 255) / (MATRIX_TRAIL_LENGTH + 1));
+            for (uint8_t t = 0; t < drops[i].numTrails; t++) {
+                uint8_t paletteIndex = 1 + (uint8_t)(((uint16_t)(t + 1) * 255) / (drops[i].numTrails + 1));
                 int16_t trailY = (int16_t)drops[i].row * tileHeight - (int16_t)(t + 1) * tileHeight;
 
                 while (trailY < 0) {
@@ -85,13 +87,15 @@ bool matrix(void) {
 
             draw_matrix_glyph(drops[i].tileIndex, 1, x, headY);
 
-            for (int8_t t = MATRIX_TRAIL_LENGTH - 1; t > 0; t--) {
-                drops[i].trail[t] = drops[i].trail[t - 1];
+            if (random() % 100 < 30) {
+                for (int8_t t = drops[i].numTrails - 1; t > 0; t--) {
+                    drops[i].trail[t] = drops[i].trail[t - 1];
+                }
+                drops[i].trail[0] = drops[i].tileIndex;
+            
+                drops[i].row = (drops[i].row + 1) % rows;
+                drops[i].tileIndex = MATRIX_GET_GLYPH();
             }
-            drops[i].trail[0] = drops[i].tileIndex;
-
-            drops[i].row = (drops[i].row + 1) % rows;
-            drops[i].tileIndex = MATRIX_GET_GLYPH();
         }
 
         gfx_SwapDraw();
