@@ -85,13 +85,25 @@ void bezier_draw(const uint8_t numCurves, Bezier curves[numCurves]) {
 }
 
 void bezier_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
-    if (*x + *dx >= GFX_LCD_WIDTH || *x + *dx <= 0) 
+    if (*x + *dx >= GFX_LCD_WIDTH) {
         *dx = -*dx;
-    *x += *dx;
+        *x = GFX_LCD_WIDTH - 1;
+    } else if (*x + *dx <= 0) {
+        *dx = -*dx;
+        *x = 0;
+    } else {
+        *x += *dx;
+    }
 
-    if (*y + *dy >= GFX_LCD_HEIGHT || *y + *dy <= 0) 
+    if (*y + *dy >= GFX_LCD_HEIGHT) {
         *dy = -*dy;
-    *y += *dy;
+        *y = GFX_LCD_HEIGHT - 1;
+    } else if (*y + *dy <= 0) {
+        *dy = -*dy;
+        *y = 0;
+    } else {
+        *y += *dy;
+    }
 }
 
 void bezier_update(const uint8_t numCurves, Bezier curves[numCurves], 
@@ -122,7 +134,7 @@ void bezier_update(const uint8_t numCurves, Bezier curves[numCurves],
     bezier_update_point(&curves[0].x4, &curves[0].y4, dx4, dy4);
 }
 
-#define BEZIER_NEW_POINT() (int16_t)((random() % 4 + 1) * 2.5f)
+#define BEZIER_NEW_SPEED() (int16_t)((random() % 4 + 1) * 2.5f)
 
 bool beziers(void) {
     gfx_Begin();
@@ -137,17 +149,17 @@ bool beziers(void) {
 
     gfx_SetDrawScreen();
 
-    int16_t dx0 = BEZIER_NEW_POINT();
-    int16_t dy0 = BEZIER_NEW_POINT();
+    int16_t dx0 = BEZIER_NEW_SPEED();
+    int16_t dy0 = BEZIER_NEW_SPEED();
     
-    int16_t dx1 = BEZIER_NEW_POINT();
-    int16_t dy1 = BEZIER_NEW_POINT();
+    int16_t dx1 = BEZIER_NEW_SPEED();
+    int16_t dy1 = BEZIER_NEW_SPEED();
     
-    int16_t dx2 = BEZIER_NEW_POINT(); 
-    int16_t dy2 = BEZIER_NEW_POINT();
+    int16_t dx2 = BEZIER_NEW_SPEED(); 
+    int16_t dy2 = BEZIER_NEW_SPEED();
 
-    int16_t dx3 = BEZIER_NEW_POINT(); 
-    int16_t dy3 = BEZIER_NEW_POINT();
+    int16_t dx3 = BEZIER_NEW_SPEED(); 
+    int16_t dy3 = BEZIER_NEW_SPEED();
 
     int16_t dx4 = dx0;
     int16_t dy4 = dy0;
@@ -161,7 +173,14 @@ bool beziers(void) {
         gfx_ZeroScreen();
 
         bezier_draw(NUM_CURVES, curves);
-        bezier_update(NUM_CURVES, curves, &dx0, &dy0, &dx1, &dy1, &dx2, &dy2, &dx3, &dy3, &dx4, &dy4);
+        bezier_update(
+            NUM_CURVES, curves, 
+            &dx0, &dy0, 
+            &dx1, &dy1, 
+            &dx2, &dy2, 
+            &dx3, &dy3, 
+            &dx4, &dy4
+        );
         palette_shift(gfx_palette);
         
         gfx_SwapDraw();
