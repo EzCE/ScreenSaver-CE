@@ -29,6 +29,7 @@ int main(void) {
         triss,
         beziers,
         snow,
+        rain,
         bubbles,
         merth
     }; // Add animation functions here
