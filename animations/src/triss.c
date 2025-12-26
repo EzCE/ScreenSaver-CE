@@ -17,7 +17,7 @@ typedef struct Triangle {
     uint16_t color;
 } Triangle;
 
-void triss_init(const uint8_t numTris, Triangle tris[numTris]) {
+static void triss_init(const uint8_t numTris, Triangle tris[numTris]) {
     tris[0].x1 = random() % GFX_LCD_WIDTH;
     tris[0].y1 = random() % GFX_LCD_HEIGHT;
     tris[0].x2 = random() % GFX_LCD_WIDTH;
@@ -37,7 +37,7 @@ void triss_init(const uint8_t numTris, Triangle tris[numTris]) {
     }
 }
 
-void triss_draw(const uint8_t numTris, Triangle tris[numTris]) {
+static void triss_draw(const uint8_t numTris, Triangle tris[numTris]) {
     for (int8_t i = numTris - 1; i >= 0; i--) {
         gfx_SetColor(tris[i].color);
         gfx_Line(tris[i].x1, tris[i].y1, tris[i].x2, tris[i].y2);
@@ -46,7 +46,7 @@ void triss_draw(const uint8_t numTris, Triangle tris[numTris]) {
     }
 }
 
-void triss_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
+static void triss_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
     if (*x + *dx >= GFX_LCD_WIDTH || *x + *dx <= 0) 
         *dx = -*dx;
     *x += *dx;
@@ -56,7 +56,7 @@ void triss_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
     *y += *dy;
 }
 
-void triss_update(const uint8_t numTris, Triangle tris[numTris], 
+static void triss_update(const uint8_t numTris, Triangle tris[numTris], 
     int16_t *dx1, int16_t *dy1, 
     int16_t *dx2, int16_t *dy2, 
     int16_t *dx3, int16_t *dy3) {

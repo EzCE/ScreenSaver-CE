@@ -13,7 +13,7 @@
 #define ANGLE 360
 #define SPEED 10
 
-void walk_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
+static void walk_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     for (uint8_t i = 0; i < numTurtles; i++) {
         Turtle* t = &turtles[i];
         Turtle_Init(t);
@@ -28,7 +28,7 @@ void walk_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     }
 }
 
-void walk_walk(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
+static void walk_walk(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     for (uint8_t i = 0; i < numTurtles; i++) {
         Turtle* t = &turtles[i];
         Turtle_Left(t, random() % ANGLE);

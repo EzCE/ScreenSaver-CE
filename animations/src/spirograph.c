@@ -31,7 +31,7 @@ typedef enum {
 
 static SpiroMode mode = MODE_CIRCLE;
 
-void spiro_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
+static void spiro_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     float cx = GFX_LCD_WIDTH / 2.0f;
     float cy = GFX_LCD_HEIGHT / 2.0f;
     float radius = (GFX_LCD_HEIGHT < GFX_LCD_WIDTH ? GFX_LCD_HEIGHT : GFX_LCD_WIDTH) / 3.0f;
@@ -100,7 +100,7 @@ void spiro_init(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     speed = (rand() % 9) + 2;
 }
 
-void spiro_spiro(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
+static void spiro_spiro(const uint8_t numTurtles, Turtle turtles[numTurtles]) {
     for (uint8_t i = 0; i < numTurtles; i++) {
         Turtle* t = &turtles[i];
 
