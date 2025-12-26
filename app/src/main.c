@@ -47,7 +47,8 @@ void redraw(uint8_t option, bool hookEnabled, uint8_t animation, uint8_t apdTime
         "Triss", 
         "Beziers",
         "Snow",
-        "Bubbles", 
+        "Rain",
+        "Baubles", 
         "Merth"
     }; // Add screensaver names here
     
@@ -62,6 +63,7 @@ void redraw(uint8_t option, bool hookEnabled, uint8_t animation, uint8_t apdTime
         "Merth", 
         "Merth, v3x3d", 
         "Merth", 
+        "Merth",
         "Merth",
         "Merth",
         "Merth",
