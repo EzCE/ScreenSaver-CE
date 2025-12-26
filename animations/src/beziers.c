@@ -22,7 +22,7 @@ typedef struct Bezier {
     uint16_t color;
 } Bezier;
 
-void bezier_init(const uint8_t numCurves, Bezier curves[numCurves]) {
+static void bezier_init(const uint8_t numCurves, Bezier curves[numCurves]) {
     curves[0].x0 = random() % GFX_LCD_WIDTH;
     curves[0].y0 = random() % GFX_LCD_HEIGHT;
     curves[0].x1 = random() % GFX_LCD_WIDTH;
@@ -54,7 +54,7 @@ void bezier_init(const uint8_t numCurves, Bezier curves[numCurves]) {
     }
 }
 
-void bezier_draw_curve(const Bezier *curve) {
+static void bezier_draw_curve(const Bezier *curve) {
     int16_t prevX = curve->x0;
     int16_t prevY = curve->y0;
     
@@ -87,13 +87,13 @@ void bezier_draw_curve(const Bezier *curve) {
     }
 }
 
-void bezier_draw(const uint8_t numCurves, Bezier curves[numCurves]) {
+static void bezier_draw(const uint8_t numCurves, Bezier curves[numCurves]) {
     for (int8_t i = numCurves - 1; i >= 0; i--) {
         bezier_draw_curve(&curves[i]);
     }
 }
 
-void bezier_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
+static void bezier_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
     if (*x + *dx >= GFX_LCD_WIDTH) {
         *dx = -*dx;
         *x = GFX_LCD_WIDTH - 1;
@@ -115,7 +115,7 @@ void bezier_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
     }
 }
 
-void bezier_update(const uint8_t numCurves, Bezier curves[numCurves], 
+static void bezier_update(const uint8_t numCurves, Bezier curves[numCurves], 
     int16_t *dx0, int16_t *dy0, 
     int16_t *dx1, int16_t *dy1, 
     int16_t *dx2, int16_t *dy2,

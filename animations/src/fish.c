@@ -41,7 +41,7 @@ typedef struct Fish {
 #define BIG_FISH_WIDTH  50
 #define BIG_FISH_HEIGHT (GFX_LCD_HEIGHT / 2 - 4)
 
-bool fish_shouldRemove(Fish* fish)
+static bool fish_shouldRemove(Fish* fish)
 {
     return fish->X < -(fish->Width + MARGIN)
         || fish->X > (fish->Width + MARGIN + GFX_LCD_WIDTH);
@@ -49,7 +49,7 @@ bool fish_shouldRemove(Fish* fish)
 
 #define randPercent() (randInt(0, 100)/100.0f)
 
-void fish_generate(Fish* fish) 
+static void fish_generate(Fish* fish) 
 {
     fish->Direction = random() % 2;
     fish->Color = randInt(0, 255);
@@ -73,7 +73,7 @@ void fish_generate(Fish* fish)
     }
 }
 
-bool fish_step(Fish* fishes, const uint8_t maxFish)
+static bool fish_step(Fish* fishes, const uint8_t maxFish)
 {
     for (uint8_t i = 0; i < maxFish; i += 1)
     {
@@ -107,13 +107,13 @@ bool fish_step(Fish* fishes, const uint8_t maxFish)
 #define TAIL_MARGIN 3
 #define EYE_MARGIN 4
 
-static inline void fish_drawBody(const Fish* fish)
+static void fish_drawBody(const Fish* fish)
 {
     gfx_SetColor(fish->Color);
     gfx_FillEllipse(fish->X, fish->Y, fish->Width, fish->Height);
 }
 
-static inline void fish_drawEye(const Fish* fish)
+static void fish_drawEye(const Fish* fish)
 {
     uint24_t eyeX;
     uint8_t eyeY;
@@ -139,7 +139,7 @@ static inline void fish_drawEye(const Fish* fish)
     gfx_SetPixel(eyeX, eyeY);
 }
 
-static inline void fish_drawMouth(const Fish* fish)
+static void fish_drawMouth(const Fish* fish)
 {
     uint24_t mounthX;
 
@@ -157,7 +157,7 @@ static inline void fish_drawMouth(const Fish* fish)
     gfx_HorizLine(mounthX, fish->Y, fish->Width / 4);
 }
 
-static inline void fish_drawTail(const Fish* fish)
+static void fish_drawTail(const Fish* fish)
 {
     float x1, x2, x3;
     float y1, y2, y3;
@@ -192,7 +192,7 @@ static inline void fish_drawTail(const Fish* fish)
     gfx_FillTriangle(x1, y1, x2, y2, x3, y3);
 }
 
-void fish_draw(const Fish* fishes, const uint8_t maxFish, const uint8_t backgroundColor)
+static void fish_draw(const Fish* fishes, const uint8_t maxFish, const uint8_t backgroundColor)
 {
     gfx_FillScreen(backgroundColor);
     for (uint8_t i = 0; i < maxFish; i += 1)
@@ -212,7 +212,7 @@ void fish_draw(const Fish* fishes, const uint8_t maxFish, const uint8_t backgrou
 #define BG_COLOR_FIELD_LENGTH   1
 #define VERSION_NUM             11
 
-bool strnequ(char* src, char* dst, uint8_t len)
+static bool strnequ(char* src, char* dst, uint8_t len)
 {
     for (uint8_t i = 0; i < len; i++)
     {
@@ -223,7 +223,7 @@ bool strnequ(char* src, char* dst, uint8_t len)
     return true;
 }
 
-uint8_t fish_read(Fish* fishes, uint8_t* numFishes, uint8_t* backgroundColor)
+static uint8_t fish_read(Fish* fishes, uint8_t* numFishes, uint8_t* backgroundColor)
 {
     uint8_t var = ti_Open(APPVAR_NAME, "r");
     if (var == 0)

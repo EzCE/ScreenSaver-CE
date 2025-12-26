@@ -26,7 +26,7 @@ typedef struct Snowflake {
     uint8_t size;
 } Snowflake;
 
-void snow_initFlake(Snowflake* flake, bool startAtTop) {
+static void snow_initFlake(Snowflake* flake, bool startAtTop) {
     flake->size = randInt(1, NUM_SIZES+1);
     
     flake->x = (float)randInt(0, GFX_LCD_WIDTH - 1);
@@ -44,7 +44,7 @@ void snow_initFlake(Snowflake* flake, bool startAtTop) {
     flake->drift = (RAND_PERCENT() * 2.0f - 1.0f) * MAX_DRIFT;
 }
 
-void snow_init(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
+static void snow_init(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
     srand(rtc_Time());
     
     for (uint8_t i = 0; i < numFlakes; i++) {
@@ -52,7 +52,7 @@ void snow_init(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
     }
 }
 
-bool snow_update(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
+static bool snow_update(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
     for (uint8_t i = 0; i < numFlakes; i++) {
         Snowflake* flake = &snowflakes[i];
         
@@ -83,7 +83,7 @@ bool snow_update(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
     return !kb_AnyKey();
 }
 
-void snow_drawFlake(const Snowflake* flake) {
+static void snow_drawFlake(const Snowflake* flake) {
     int16_t x = (int16_t)flake->x;
     int16_t y = (int16_t)flake->y;
     uint8_t radius = flake->size;
@@ -108,7 +108,7 @@ void snow_drawFlake(const Snowflake* flake) {
     }
 }
 
-void snow_draw(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
+static void snow_draw(const uint8_t numFlakes, Snowflake snowflakes[numFlakes]) {
     gfx_ZeroScreen();
 
     for (uint8_t size = 0; size < NUM_SIZES; size++) {

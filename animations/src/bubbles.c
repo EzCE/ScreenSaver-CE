@@ -40,7 +40,7 @@ static void bubble_init(const uint8_t numBubbles, Bubble bubbles[numBubbles]) {
 
         bubble->dx = (random() % 3) + 1;
         bubble->dy = (random() % 3) + 1;
-        
+
         if (random() % 2) 
             bubble->dx = -bubble->dx;
         if (random() % 2) 
@@ -50,7 +50,7 @@ static void bubble_init(const uint8_t numBubbles, Bubble bubbles[numBubbles]) {
     }
 }
 
-static inline bool bubble_update(const uint8_t numBubbles, Bubble bubbles[numBubbles]) {
+static bool bubble_update(const uint8_t numBubbles, Bubble bubbles[numBubbles]) {
     for (uint8_t i = 0; i < numBubbles; i++) {
         Bubble *bubble = &bubbles[i];
 
@@ -123,7 +123,7 @@ static inline bool bubble_update(const uint8_t numBubbles, Bubble bubbles[numBub
     return !kb_AnyKey();
 }
 
-static inline void bubble_draw(const uint8_t numBubbles, Bubble bubbles[numBubbles]) {
+static void bubble_draw(const uint8_t numBubbles, Bubble bubbles[numBubbles]) {
     for (uint8_t i = 0; i < numBubbles; i++) {
         Bubble *bubble = &bubbles[i];
         gfx_SetColor(bubble->color);

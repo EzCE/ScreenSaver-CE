@@ -9,7 +9,7 @@
 #include "palette.h"
 #include "gfx/gfxmerth.h"
 
-void merth_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
+static void merth_update_point(uint16_t *x, uint16_t *y, int16_t *dx, int16_t *dy) {
     if (*x + *dx >= GFX_LCD_WIDTH - merth_face_width || *x + *dx <= 0) 
         *dx = -*dx;
     *x += *dx;
