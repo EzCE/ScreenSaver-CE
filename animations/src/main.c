@@ -21,6 +21,7 @@ int main(void) {
         pipes,
         fish,
         walk,
+        strands,
         aod,
         tiles,
         spirograph,
