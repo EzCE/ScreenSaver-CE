@@ -1,7 +1,7 @@
 include '../../include/ez80.inc'
 include '../../include/tiformat.inc'
 
-format ti archived appvar 'Toasters'
+format ti archived appvar 'Spiral'
 
 ;---------------------------------
 ; Metadata structure:
@@ -19,8 +19,8 @@ format ti archived appvar 'Toasters'
 metadata:
     db "SAVR"
     dl exec - metadata
-    db "Toasters", 0
-    db "TIny, RoccoLox", 0
+    db "Spiral", 0
+    db "Merth", 0
 
 exec:
     include 'bin/output.asm'

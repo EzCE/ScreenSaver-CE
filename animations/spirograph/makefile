@@ -1,6 +1,6 @@
 NAME = output
-APPVAR_NAME = Toasters
-ASM_SRC = toasters.asm
+APPVAR_NAME = Spiral
+ASM_SRC = spirograph.asm
 COMPRESSED = NO
 OUTPUT_MAP = NO
 
