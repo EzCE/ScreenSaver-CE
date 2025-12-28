@@ -1,0 +1,18 @@
+palettes:
+  - name: palette_tiles
+    fixed-entries:
+      - color: {index: 0, hex: "#000000"}
+      - color: {index: 1, hex: "#EF2F27"}
+      - color: {index: 2, hex: "#519F50"}
+      - color: {index: 3, hex: "#FBB829"}
+      - color: {index: 4, hex: "#2C78BF"}
+      - color: {index: 5, hex: "#E02C6D"}
+      - color: {index: 6, hex: "#0AAEB3"}
+      - color: {index: 7, hex: "#BAA67F"}
+
+outputs:
+  - type: c
+    const: false
+    include-file: gfx.h
+    palettes:
+      - palette_tiles

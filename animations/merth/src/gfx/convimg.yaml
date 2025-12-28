@@ -1,0 +1,20 @@
+palettes:
+  - name: palette_merth
+    fixed-entries:
+      - color: {index: 0, hex: "#000000"}
+    images: automatic
+
+converts:
+  - name: merth_sprite
+    palette: palette_merth
+    images:
+      - merth_face.bmp
+
+outputs:
+  - type: c
+    const: false
+    include-file: gfx.h
+    converts:
+      - merth_sprite
+    palettes:
+      - palette_merth
