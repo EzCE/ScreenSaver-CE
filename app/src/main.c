@@ -1,18 +1,18 @@
 #include "asm/utils.h"
-#include "../../animations/src/screensavers.h"
 
 #include <fileioc.h>
 #include <graphx.h>
 #include <keypadc.h>
+#include <string.h>
 #include <time.h>
 #include <ti/getcsc.h>
 #include <ti/screen.h>
 
-// void noPreview(void) {
-//     gfx_SetColor(42);
-//     gfx_FillRectangle_NoClip(96, 131, 128, 96);
-//     gfx_PrintStringXY("No preview", 124, 173);
-// }
+/**
+ * @brief PixelShadow RAM location.
+ *
+ */
+#define os_PixelShadow      ((uint8_t *)0xD031F6)
 
 void drawButtonBG(unsigned int x, uint8_t y, uint8_t width, bool selected) {
     if (selected) {
@@ -33,58 +33,13 @@ void drawButtonBG(unsigned int x, uint8_t y, uint8_t width, bool selected) {
     gfx_PrintChar('>');
 }
 
-void redraw(uint8_t option, bool hookEnabled, uint8_t animation, uint8_t apdTimer) {
-    static const char *names[ANIMATION_COUNT] = {
-        "Toasters", 
-        "Pipes", 
-        "Fish", 
-        "Walk",
-        "Strands",
-        "Clock", 
-        "Tiles", 
-        "Spiral", 
-        "Matrix", 
-        "Triss", 
-        "Beziers",
-        "Snow",
-        "Rain",
-        "Baubles", 
-        "Merth"
-    }; // Add screensaver names here
-    
-    static const char *authors[ANIMATION_COUNT] = {
-        "TIny, RoccoLox", 
-        "TIny, RoccoLox", 
-        "Merth", 
-        "Merth",
-        "Merth",
-        "TIny, RoccoLox", 
-        "TIny, RoccoLox", 
-        "Merth", 
-        "Merth, v3x3d", 
-        "Merth", 
-        "Merth",
-        "Merth",
-        "Merth",
-        "Merth",
-        "Merth"
-    }; // Add screensaver authors here
-    
-    // static void (*previews[ANIMATION_COUNT]) (void) = {}; // Add screensaver previews here (WIP)
-
-    // previews[animation]();
-    // gfx_SetTextBGColor(10);
-    // gfx_SetTextScale(1, 1);
-
-    gfx_SetColor(189);
-
+void redraw(uint8_t option, bool hookEnabled, char *anim, uint8_t apdTimer) {
     if (!option) {
         gfx_SetColor(255);
     }
 
     gfx_Rectangle_NoClip(204, 62, 41, 11);
     gfx_SetColor(189);
-    // gfx_Rectangle_NoClip(96, 131, 128, 96);
 
     drawButtonBG(206, 64, 37, option == 0);
 
@@ -110,30 +65,82 @@ void redraw(uint8_t option, bool hookEnabled, uint8_t animation, uint8_t apdTime
     }
 
     drawButtonBG(166, 100, 77, option == 2);
-    gfx_PrintStringXY(names[animation], 204 - gfx_GetStringWidth(names[animation]) / 2, 100);
-    gfx_SetColor(10);
-    gfx_FillRectangle_NoClip(126, 126, 119, 8);
-    gfx_SetTextFGColor(189);
-    gfx_PrintStringXY(authors[animation], 245 - gfx_GetStringWidth(authors[animation]), 126);
+
+    if (anim != NULL) {
+        anim += sizeof(unsigned int);
+        gfx_PrintStringXY(anim, 204 - gfx_GetStringWidth(anim) / 2, 100);
+        anim += strlen(anim) + 1; // Skip to author info
+        gfx_SetColor(10);
+        gfx_FillRectangle_NoClip(126, 126, 119, 8);
+        gfx_SetTextFGColor(189);
+        gfx_PrintStringXY(anim, 245 - gfx_GetStringWidth(anim), 126);
+    } else {
+        gfx_PrintStringXY("None", 189, 100);
+    }
+}
+
+uint8_t getFiles(uint8_t *fileCount, char *searchName) {
+    char *fileName;
+    void *vatPtr = NULL;
+    *fileCount = 0;
+    unsigned int currentOffset = 0;
+    uint8_t found = 0;
+    *(char *)os_PixelShadow = '\0';
+
+    sortVAT();
+
+    while ((fileName = ti_Detect(&vatPtr, "SAVR"))) {
+        strcpy(&((char *)os_PixelShadow)[currentOffset], fileName);
+
+        if (!strcmp(searchName, fileName)) {
+            found = *fileCount;
+        }
+
+        currentOffset += 9;
+        *fileCount = *fileCount + 1;
+    }
+
+    return found;
+}
+
+char *getAnimation(char *name) {
+    char *anim = NULL;
+    uint8_t slot = ti_Open(name, "r");
+
+    if (slot) {
+        anim = ti_GetDataPtr(slot) + sizeof(char) * 4;
+        ti_Close(slot);
+    }
+
+    return anim;
 }
 
 int main(void) {
     gfx_SetTextBGColor(0);
     gfx_SetTextTransparentColor(0);
     uint8_t slot = ti_Open("ScrnSavr", "r");
-    uint8_t animation = 0;
+    uint8_t animCount = 0;
+    uint8_t animation = 0; //
+    uint8_t option = 0; // Settings menu option
     uint8_t apdTimer = 5;
+    bool hookEnabled = isHookInstalled();
 
     if (slot) {
-        ti_Read(&animation, sizeof(animation), 1, slot);
-        ti_Seek(sizeof(animation), SEEK_SET, slot);
         ti_Read(&apdTimer, sizeof(apdTimer), 1, slot);
+        animation = getFiles(&animCount, ti_GetDataPtr(slot));
+    } else {
+        getFiles(&animCount, NULL);
     }
 
     ti_Close(slot);
 
-    uint8_t option = 0;
-    bool hookEnabled = isHookInstalled();
+    if (!animCount && hookEnabled) {
+        hookEnabled = false;
+        asm(
+            "ld iy,$D00080\n\t" // ld iy, ti.flags
+            "call $0213E4" // call ti.ClrGetKeyHook
+        );
+    }
 
     gfx_Begin();
     gfx_SetDrawBuffer();
@@ -150,7 +157,7 @@ int main(void) {
     gfx_SetColor(189);
     gfx_HorizLine_NoClip(73, 54, 174);
     gfx_HorizLine_NoClip(73, 116, 174);
-    redraw(option, hookEnabled, animation, apdTimer);
+    redraw(option, hookEnabled, getAnimation((char *)os_PixelShadow + 9 * animation), apdTimer);
     gfx_BlitBuffer();
 
     bool keyPressed = false;
@@ -184,7 +191,7 @@ int main(void) {
 
             switch (option) {
                 case 0: // Toggle screensaver hook on / off
-                    if (kb_IsDown(kb_KeyLeft) || kb_IsDown(kb_KeyRight)) {
+                    if (animCount && (kb_IsDown(kb_KeyLeft) || kb_IsDown(kb_KeyRight))) {
                         hookEnabled = !hookEnabled;
                     }
 
@@ -210,12 +217,12 @@ int main(void) {
                         if (animation) {
                             animation--;
                         } else {
-                            animation = ANIMATION_COUNT - 1;
+                            animation = animCount - 1;
                         }
                     } else if (kb_IsDown(kb_KeyRight)) {
                         animation++;
 
-                        if (animation == ANIMATION_COUNT) {
+                        if (animation == animCount) {
                             animation = 0;
                         }
                     }
@@ -223,7 +230,7 @@ int main(void) {
                     break;
             }
 
-            redraw(option, hookEnabled, animation, apdTimer);
+            redraw(option, hookEnabled, getAnimation((char *)os_PixelShadow + 9 * animation), apdTimer);
             gfx_BlitBuffer();
 
             if (!keyPressed) {
@@ -241,9 +248,9 @@ int main(void) {
     gfx_End();
 
     slot = ti_Open("ScrnSavr", "w");
-    ti_Write(&animation, sizeof(animation), 1, slot);
-    ti_Seek(sizeof(animation), SEEK_SET, slot);
     ti_Write(&apdTimer, sizeof(apdTimer), 1, slot);
+    ti_Seek(sizeof(animation), SEEK_SET, slot);
+    ti_Write((char *)os_PixelShadow + 9 * animation, sizeof(char), 9, slot);
     ti_SetArchiveStatus(true, slot);
     ti_Close(slot);
 

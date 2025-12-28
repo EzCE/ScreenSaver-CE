@@ -195,7 +195,7 @@ tempProg:
     db ti.TempProgObj, "Screen", 0
 
 cProgExec:
-    include 'ANIMATE.asm'
+    ; include 'ANIMATE.asm'
 cProgSize := $ - cProgExec
 
 storeScreen:

@@ -1,7 +1,7 @@
 all: animations app
 
 animations:
-	@$(MAKE) -C animations all
+# 	@$(MAKE) -C animations all
 
 app:
 	@$(MAKE) -C app
