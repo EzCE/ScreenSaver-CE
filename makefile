@@ -32,6 +32,7 @@ clean:
 	@$(MAKE) -C animations/rain clean
 	@$(MAKE) -C animations/snow clean
 	@$(MAKE) -C animations/spirograph clean
+	@$(MAKE) -C animations/starfield clean
 	@$(MAKE) -C animations/strands clean
 	@$(MAKE) -C animations/tiles clean
 	@$(MAKE) -C animations/toasters clean
