@@ -4,5 +4,3 @@
 **/gfx/*.c
 **/gfx/*.h
 *.yaml.lst
-
-app/src/asm/ANIMATE.asm
