@@ -285,9 +285,11 @@ rawKeyHook:
 tempProg:
     db ti.TempProgObj, "Screen", 0
 
-cProgExec:
-    include 'ANIMATE.asm'
-cProgSize := $ - cProgExec
+settingsAppvar:
+    db ti.AppVarObj, "ScrnSavr", 0
+
+validHeader:
+    db "SAVR", 0
 
 storeScreen:
     push de
