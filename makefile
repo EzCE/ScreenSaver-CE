@@ -3,7 +3,7 @@ all: animations app
 animations:
 	@$(MAKE) -C animations/aod all
 	@$(MAKE) -C animations/beziers all
-	@$(MAKE) -C animations/bubbles all
+	@$(MAKE) -C animations/baubles all
 	@$(MAKE) -C animations/fish all
 	@$(MAKE) -C animations/matrix all
 	@$(MAKE) -C animations/merth all
@@ -23,7 +23,7 @@ app:
 clean:
 	@$(MAKE) -C animations/aod clean
 	@$(MAKE) -C animations/beziers clean
-	@$(MAKE) -C animations/bubbles clean
+	@$(MAKE) -C animations/baubles clean
 	@$(MAKE) -C animations/fish clean
 	@$(MAKE) -C animations/matrix clean
 	@$(MAKE) -C animations/merth clean

@@ -1,6 +1,6 @@
 NAME = output
 APPVAR_NAME = Baubles
-ASM_SRC = bubbles.asm
+ASM_SRC = baubles.asm
 COMPRESSED = NO
 OUTPUT_MAP = NO
 
