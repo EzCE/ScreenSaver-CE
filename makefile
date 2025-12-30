@@ -11,6 +11,7 @@ animations:
 	@$(MAKE) -C animations/rain all
 	@$(MAKE) -C animations/snow all
 	@$(MAKE) -C animations/spirograph all
+	@$(MAKE) -C animations/starfield all
 	@$(MAKE) -C animations/strands all
 	@$(MAKE) -C animations/tiles all
 	@$(MAKE) -C animations/toasters all
@@ -31,6 +32,7 @@ clean:
 	@$(MAKE) -C animations/rain clean
 	@$(MAKE) -C animations/snow clean
 	@$(MAKE) -C animations/spirograph clean
+	@$(MAKE) -C animations/starfield clean
 	@$(MAKE) -C animations/strands clean
 	@$(MAKE) -C animations/tiles clean
 	@$(MAKE) -C animations/toasters clean
