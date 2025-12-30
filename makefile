@@ -11,6 +11,7 @@ animations:
 	@$(MAKE) -C animations/rain all
 	@$(MAKE) -C animations/snow all
 	@$(MAKE) -C animations/spirograph all
+	@$(MAKE) -C animations/starfield all
 	@$(MAKE) -C animations/strands all
 	@$(MAKE) -C animations/tiles all
 	@$(MAKE) -C animations/toasters all
