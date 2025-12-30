@@ -57,10 +57,67 @@ continueHook:
     ld (hl), 2
     ;---------------
     push bc
-    ld hl, cProgSize + screenBackupSize + statusBarBackupSize + 128
+    ld hl, settingsAppvar
+    call ti.Mov9ToOP1
+    call ti.ChkFindSym
+    jr c, notFound
+    call ti.ChkInRam
+    jr z, inRam
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+inRam:
+    inc de
+    inc de
+    inc de
+    ld hl, ti.OP1 + 1
+    ex de, hl
+    ld bc, 9
+    ldir
+    call ti.ChkFindSym
+    jr c, notFound
+    call ti.ChkInRam
+    jr z, inRam2
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+inRam2:
+    push de
+    inc de
+    inc de
+    ld b, 4
+    ld hl, validHeader
+    call ti.StrCmpre
+    pop de
+    jr z, isValid
+    scf
+    jr notFound
+
+isValid:
+    or a, a
+    sbc hl, hl
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    ld bc, screenBackupSize + statusBarBackupSize + 128
+    add hl, bc
     call ti.EnoughMem
+
+notFound:
     pop bc
-    jr c, abortHook
+    jp c, abortHook
     ld hl, (ti.curRow)
     push hl
     ; I don't know what these do but I need to preserve them since HomeUp messes with them
@@ -69,6 +126,7 @@ continueHook:
     ld.sis hl, ($059A)
     push hl
     push ix
+    call ti.PushOP1
     call ti.CleanAll
     call ti.DeleteTempPrograms
     ld hl, tempProg
@@ -81,14 +139,47 @@ continueHook:
     ld hl, ti.vRam + ((ti.lcdWidth * 2) * 30)
     ld bc, screenBackupSize
     call storeScreen
-    ld hl, cProgSize
+    call ti.PopOP1
+    call ti.ChkFindSym
+    call ti.ChkInRam
+    jr z, inRam3
+    ld hl, 10
+    add hl, de
+    ld a, c
+    ld bc, 0
+    ld c, a
+    add hl, bc
+    ex de, hl
+
+inRam3:
+    or a, a
+    sbc hl, hl
+    ld a, (de)
+    ld l, a
+    inc de
+    ld a, (de)
+    ld h, a
+    inc de
+    inc de
+    inc de
+    inc de
+    inc de
+    push hl
+    ex de, hl
+    ld de, (hl)
+    add hl, de
+    ex de, hl
+    pop hl
+    push de
     push hl
     ld (ti.asm_prgm_size), hl
     ld de, ti.userMem
     call ti.InsertMem
-    ld hl, cProgExec + 2
-    ld de, ti.userMem
     pop bc
+    ld de, ti.userMem
+    pop hl
+    dec hl
+    dec hl
     ldir
     ld hl, (ti.getKeyHookPtr)
     push hl
@@ -194,9 +285,11 @@ rawKeyHook:
 tempProg:
     db ti.TempProgObj, "Screen", 0
 
-cProgExec:
-    include 'ANIMATE.asm'
-cProgSize := $ - cProgExec
+settingsAppvar:
+    db ti.AppVarObj, "ScrnSavr", 0
+
+validHeader:
+    db "SAVR", 0
 
 storeScreen:
     push de

@@ -1,0 +1,20 @@
+palettes:
+  - name: palette_toaster
+    fixed-entries:
+      - color: {index: 0, hex: "#000000"}
+      - color: {index: 1, hex: "#F71C84"}
+    images: automatic
+
+converts:
+  - name: sprites_toaster
+    palette: palette_toaster
+    images:
+      - ./*.png
+
+outputs:
+  - type: c
+    include-file: gfx.h
+    palettes:
+      - palette_toaster
+    converts:
+      - sprites_toaster

@@ -1,8 +1,8 @@
 .vscode/
-bin/
-obj/
-animations/src/gfx/*.c
-animations/src/gfx/*.h
+**/bin/
+**/obj/
+**/gfx/*.c
+**/gfx/*.h
 *.yaml.lst
 
 app/src/asm/ANIMATE.asm
