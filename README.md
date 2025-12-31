@@ -4,10 +4,10 @@ ScreenSaver CE is a screensaver program for the TI-84 Plus CE. The program uses 
 
 ## Animations
 
-![Baubles](screenshots/baubles.gif) ![Beziers](screenshots/beziers.gif) ![Clock](screenshots/clock.gif) ![Fish](screenshots/fish.gif)
-![Matrix](screenshots/matrix.gif) ![Merth](screenshots/merth.gif) ![Pipes](screenshots/pipes.gif) ![Rain](screenshots/rain.gif)
-![Snow](screenshots/snow.gif) ![Spiral](screenshots/spiral.gif) ![Starfield](screenshots/starfield.gif) ![Strands](screenshots/strands.gif)
-![Tiles](screenshots/tiles.gif) ![Toasters](screenshots/toasters.gif) ![Triss](screenshots/triss.gif) ![Walk](screenshots/walk.gif)
+[![Baubles](screenshots/baubles.gif)](animations/baubles/) [![Beziers](screenshots/beziers.gif)](animations/beziers) [![Clock](screenshots/clock.gif)](animations/aod) [![Fish](screenshots/fish.gif)](animations/fish)
+[![Matrix](screenshots/matrix.gif)](animations/matrix) [![Merth](screenshots/merth.gif)](animations/merth) [![Pipes](screenshots/pipes.gif)](animations/pipes) [![Rain](screenshots/rain.gif)](animations/rain)
+[![Snow](screenshots/snow.gif)](animations/snow/) [![Spiral](screenshots/spiral.gif)](animations/spiral) [![Starfield](screenshots/starfield.gif)](animations/starfield/) [![Strands](screenshots/strands.gif)](animations/strands)
+[![Tiles](screenshots/tiles.gif)](animations/tiles) [![Toasters](screenshots/toasters.gif)](animations/toasters) [![Triss](screenshots/triss.gif)](animations/triss) [![Walk](screenshots/walk.gif)](animations/walk)
 
 ## Settings
 
