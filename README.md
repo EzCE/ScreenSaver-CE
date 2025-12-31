@@ -57,4 +57,4 @@ To build animations, you'll need to [install the CE C Toolchain](https://ce-prog
 
 To test your animation, you can use the **bin/output.8xp** file in your animation's directory produced when building with `make`.
 
-To build the entire project (including all animations), you can also run run `make` from the main project directory.
+To build the entire project (including all animations), you can also run `make` from the main project directory.
