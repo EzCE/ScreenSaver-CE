@@ -52,10 +52,6 @@ continueHook:
     or a, a
     sbc hl, de
     jr c, abortHook
-    ;---------------
-    ld hl, -1
-    ld (hl), 2
-    ;---------------
     push bc
     ld hl, settingsAppvar
     call ti.Mov9ToOP1
