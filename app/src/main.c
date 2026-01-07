@@ -14,7 +14,7 @@
  */
 #define os_PixelShadow      ((uint8_t *)0xD031F6)
 
-void drawButtonBG(unsigned int x, uint8_t y, uint8_t width, bool selected) {
+static void drawButtonBG(unsigned int x, uint8_t y, uint8_t width, bool selected, bool toggle) {
     if (selected) {
         gfx_SetColor(189);
         gfx_FillRectangle_NoClip(x - 3, y - 2, width + 6, 11);
@@ -27,13 +27,15 @@ void drawButtonBG(unsigned int x, uint8_t y, uint8_t width, bool selected) {
         gfx_FillRectangle_NoClip(x - 3, y - 3, width + 6, 13);
     }
 
-    gfx_SetTextXY(x, y);
-    gfx_PrintChar('<');
-    gfx_SetTextXY(x + width - 5, y);
-    gfx_PrintChar('>');
+    if (toggle) {
+        gfx_SetTextXY(x, y);
+        gfx_PrintChar('<');
+        gfx_SetTextXY(x + width - 5, y);
+        gfx_PrintChar('>');
+    }
 }
 
-void redraw(uint8_t option, bool hookEnabled, char *anim, uint8_t apdTimer) {
+static void redraw(uint8_t option, bool hookEnabled, char *anim, uint8_t apdTimer) {
     if (!option) {
         gfx_SetColor(255);
     }
@@ -41,7 +43,7 @@ void redraw(uint8_t option, bool hookEnabled, char *anim, uint8_t apdTimer) {
     gfx_Rectangle_NoClip(204, 62, 41, 11);
     gfx_SetColor(189);
 
-    drawButtonBG(206, 64, 37, option == 0);
+    drawButtonBG(206, 64, 37, option == 0, true);
 
     if (hookEnabled) {
         gfx_PrintStringXY("Yes", 213, 64);
@@ -49,7 +51,7 @@ void redraw(uint8_t option, bool hookEnabled, char *anim, uint8_t apdTimer) {
         gfx_PrintStringXY("No", 217, 64);
     }
 
-    drawButtonBG(189, 82, 53, option == 1);
+    drawButtonBG(189, 82, 53, option == 1, true);
 
     if (!apdTimer) {
         gfx_PrintStringXY("Never", 196, 82);
@@ -64,7 +66,7 @@ void redraw(uint8_t option, bool hookEnabled, char *anim, uint8_t apdTimer) {
         gfx_PrintString(" min");
     }
 
-    drawButtonBG(166, 100, 77, option == 2);
+    drawButtonBG(166, 100, 77, option == 2, true);
 
     if (anim != NULL) {
         anim += sizeof(unsigned int);
@@ -74,12 +76,14 @@ void redraw(uint8_t option, bool hookEnabled, char *anim, uint8_t apdTimer) {
         gfx_FillRectangle_NoClip(126, 126, 119, 8);
         gfx_SetTextFGColor(189);
         gfx_PrintStringXY(anim, 245 - gfx_GetStringWidth(anim), 126);
+        drawButtonBG(134, 152, 52, option == 3, false);
+        gfx_PrintStringXY("Preview", 134, 152);
     } else {
         gfx_PrintStringXY("None", 189, 100);
     }
 }
 
-uint8_t getFiles(uint8_t *fileCount, char *searchName) {
+static uint8_t getFiles(uint8_t *fileCount, char *searchName) {
     char *fileName;
     void *vatPtr = NULL;
     *fileCount = 0;
@@ -103,7 +107,7 @@ uint8_t getFiles(uint8_t *fileCount, char *searchName) {
     return found;
 }
 
-char *getAnimation(char *name) {
+static char *getAnimation(char *name) {
     char *anim = NULL;
     uint8_t slot = ti_Open(name, "r");
 
@@ -113,6 +117,26 @@ char *getAnimation(char *name) {
     }
 
     return anim;
+}
+
+static void cleanup(uint8_t apdTimer, uint8_t animation, bool hookEnabled) {
+    gfx_End();
+
+    uint8_t slot = ti_Open("ScrnSavr", "w");
+    ti_Write(&apdTimer, sizeof(apdTimer), 1, slot);
+    ti_Seek(sizeof(animation), SEEK_SET, slot);
+    ti_Write((char *)os_PixelShadow + 9 * animation, sizeof(char), 9, slot);
+    ti_SetArchiveStatus(true, slot);
+    ti_Close(slot);
+
+    if (hookEnabled) {
+        installHook();
+    } else {
+        asm(
+            "ld iy,$D00080\n\t" // ld iy, ti.flags
+            "call $0213E4" // call ti.ClrGetKeyHook
+        );
+    }
 }
 
 int main(void) {
@@ -134,14 +158,6 @@ int main(void) {
 
     ti_Close(slot);
 
-    if (!animCount && hookEnabled) {
-        hookEnabled = false;
-        asm(
-            "ld iy,$D00080\n\t" // ld iy, ti.flags
-            "call $0213E4" // call ti.ClrGetKeyHook
-        );
-    }
-
     gfx_Begin();
     gfx_SetDrawBuffer();
     gfx_FillScreen(10);
@@ -153,10 +169,23 @@ int main(void) {
     gfx_PrintStringXY("Enabled:", 75, 64);
     gfx_PrintStringXY("Off after:", 75, 82);
     gfx_PrintStringXY("Animation:", 75, 100);
-    gfx_PrintStringXY("Author:", 75, 126);
     gfx_SetColor(189);
     gfx_HorizLine_NoClip(73, 54, 174);
     gfx_HorizLine_NoClip(73, 116, 174);
+
+    if (!animCount && hookEnabled) {
+        hookEnabled = false;
+        asm(
+            "ld iy,$D00080\n\t" // ld iy, ti.flags
+            "call $0213E4" // call ti.ClrGetKeyHook
+        );
+    }
+
+    if (animCount) {
+        gfx_PrintStringXY("Author:", 75, 126);
+        gfx_HorizLine_NoClip(73, 142, 174);
+    }
+
     redraw(option, hookEnabled, getAnimation((char *)os_PixelShadow + 9 * animation), apdTimer);
     gfx_BlitBuffer();
 
@@ -172,17 +201,17 @@ int main(void) {
             clockOffset = clock();
         }
 
-        if (kb_Data[7] && (!keyPressed || clock() - clockOffset > CLOCKS_PER_SEC / 16)) {
+        if ((kb_Data[7] || kb_IsDown(kb_Key2nd) || kb_IsDown(kb_KeyEnter)) && (!keyPressed || clock() - clockOffset > CLOCKS_PER_SEC / 16)) {
             clockOffset = clock();
 
             if (kb_IsDown(kb_KeyUp)) {
                 if (!option) {
-                    option = 2;
+                    option = 2 + (animCount > 0);
                 } else {
                     option--;
                 }
             } else if (kb_IsDown(kb_KeyDown)) {
-                if (option == 2) {
+                if (option == 2 + (animCount > 0)) {
                     option = 0;
                 } else {
                     option++;
@@ -228,6 +257,12 @@ int main(void) {
                     }
 
                     break;
+                case 3: // Screensaver preview
+                    if (kb_IsDown(kb_Key2nd) || kb_IsDown(kb_KeyEnter)) {
+                        cleanup(apdTimer, animation, hookEnabled);
+                        previewAnimation((char *)os_PixelShadow + 9 * animation);
+                    }
+                    break;
             }
 
             redraw(option, hookEnabled, getAnimation((char *)os_PixelShadow + 9 * animation), apdTimer);
@@ -245,23 +280,7 @@ int main(void) {
         kb_Scan();
     }
 
-    gfx_End();
-
-    slot = ti_Open("ScrnSavr", "w");
-    ti_Write(&apdTimer, sizeof(apdTimer), 1, slot);
-    ti_Seek(sizeof(animation), SEEK_SET, slot);
-    ti_Write((char *)os_PixelShadow + 9 * animation, sizeof(char), 9, slot);
-    ti_SetArchiveStatus(true, slot);
-    ti_Close(slot);
-
-    if (hookEnabled) {
-        installHook();
-    } else {
-        asm(
-            "ld iy,$D00080\n\t" // ld iy, ti.flags
-            "call $0213E4" // call ti.ClrGetKeyHook
-        );
-    }
+    cleanup(apdTimer, animation, hookEnabled);
 
     return 0;
 }
