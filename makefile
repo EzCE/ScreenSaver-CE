@@ -1,6 +1,7 @@
 all: animations app
 
 animations:
+	@mkdir -p animations/bin
 	@$(MAKE) -C animations/aod all
 	@$(MAKE) -C animations/beziers all
 	@$(MAKE) -C animations/baubles all
@@ -22,6 +23,7 @@ app:
 	@$(MAKE) -C app
 
 clean:
+	@rm -rf animations/bin
 	@$(MAKE) -C animations/aod clean
 	@$(MAKE) -C animations/beziers clean
 	@$(MAKE) -C animations/baubles clean

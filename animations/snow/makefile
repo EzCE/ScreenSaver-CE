@@ -19,4 +19,4 @@ OUTPUTASM = $(NAME).asm
 
 all:
 	$(Q)convbin -j 8x -k asm -i $(BINDIR)/$(TARGET8XP) -o $(BINDIR)/$(OUTPUTASM) -n $(NAME)
-	$(Q)fasmg asm/$(ASM_SRC) $(BINDIR)/$(APPVAR_NAME).8xv
+	$(Q)fasmg asm/$(ASM_SRC) ../$(BINDIR)/$(APPVAR_NAME).8xv
