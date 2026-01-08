@@ -5,11 +5,6 @@ ScreenSaver CE is a screensaver program for the TI-84 Plus CE. The program uses
 a hook which ties into TI's APD timer, so when it is enabled it will replace
 the TI-OS APD functionality.
 
-Screenshots
---------------------
-
-To preview animaations, check out the screenshots directory!
-
 Installation
 --------------------
 
@@ -23,6 +18,8 @@ Installation
 3. Run prgmSCRNSAVR to install the settings app.
 4. Open ScrnSavr in the calculator's apps menu to enable the screensaver,
    change settings, or pick an animation.
+5. You can preview screensaver animations before setting them using the preview
+   button in the app.
 
 Creating animations
 --------------------
