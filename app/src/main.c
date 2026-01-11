@@ -260,6 +260,7 @@ int main(void) {
                 case 3: // Screensaver preview
                     if (kb_IsDown(kb_Key2nd) || kb_IsDown(kb_KeyEnter)) {
                         cleanup(apdTimer, animation, hookEnabled);
+                        while (kb_AnyKey()); // debounce
                         previewAnimation((char *)os_PixelShadow + 9 * animation);
                     }
                     break;
