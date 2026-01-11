@@ -375,6 +375,8 @@ findRestoreProgram:
 
 restoreScreen:
     ld a, (hl)
+    cp a, $BB ; indicates two white pixels
+    jr z, skipPixel
     push hl
     and a, $F0
     srl a
@@ -406,6 +408,20 @@ restoreScreen:
     ld a, b
     or a, c
     jr nz, restoreScreen
+    jr statusBarDraw
+
+skipPixel:
+    inc hl
+    inc de
+    inc de
+    inc de
+    inc de
+    dec bc
+    ld a, b
+    or a, c
+    jr nz, restoreScreen
+
+statusBarDraw:
     ld de, ti.vRam + (16 * ti.lcdWidth * 2) + (2 * 2)
     ld b, 10
 
