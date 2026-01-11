@@ -5,7 +5,7 @@ format ti archived appvar 'Pipes'
 
 ;---------------------------------
 ; Metadata structure:
-;  - 2 bytes header "SAVR"
+;  - 4 bytes header "SAVR"
 ;  - Executable data offset
 ;    (Automatically calculated)
 ;  - Animation name <= 9 bytes:

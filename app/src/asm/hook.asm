@@ -226,7 +226,11 @@ errorHandler:
     ld (ti.asm_prgm_size), hl
     ld hl, ti.userMem
     call ti.DelMem
-    call findRestoreProgram
+    ld hl, findRestoreProgram
+    ld de, ti.cursorImage
+    ld bc, spiParam - findRestoreProgram
+    ldir
+    call ti.cursorImage
     ld hl, ti.mpLcdCtrl
     ld de, ti.lcdNormalMode
     ld (hl), de
@@ -354,11 +358,13 @@ findRestoreProgram:
     inc de
     inc de
     ld hl, ti.vRam + ((ti.lcdWidth * 2) * 30)
+    ex de, hl
     ld bc, screenBackupSize
+    ld ix, osColors
     ld a, (ti.cxCurApp)
     cp a, ti.cxGraph
     jr nz, restoreScreen
-    push de
+    push hl
     push bc
     call ti.DrawGraphBackground
     call ti.GrBufCpy
@@ -368,25 +374,38 @@ findRestoreProgram:
     jr redrawStatusBarLoop - 6
 
 restoreScreen:
-    push de
-    ld a, (de)
+    ld a, (hl)
+    push hl
+    and a, $F0
     srl a
     srl a
     srl a
-    srl a
-    call getColorValue
-    pop de
-    push de
-    ld a, (de)
+    ld (.smcOffset1), a
+    lea hl, ix + 0
+.smcOffset1 := ti.cursorImage + (($ - 1) - findRestoreProgram)
+
+    ldi
+    ldi
+    pop hl
+    inc bc
+    inc bc
+
+    ld a, (hl)
+    push hl
     and a, $0F
-    call getColorValue
-    pop de
-    inc de
-    dec bc
+    add a, a
+    ld (.smcOffset2), a
+    lea hl, ix + 0
+.smcOffset2 := ti.cursorImage + (($ - 1) - findRestoreProgram)
+
+    ldi
+    ldi
+    inc bc
+    pop hl
+    inc hl
     ld a, b
     or a, c
     jr nz, restoreScreen
-    ex de, hl
     ld de, ti.vRam + (16 * ti.lcdWidth * 2) + (2 * 2)
     ld b, 10
 
@@ -463,22 +482,6 @@ spiCmd:
     jr nz, .wait2
     ld l, h
     ld (hl), a
-    ret
-
-getColorValue:
-    push hl
-    ld de, osColors
-    or a, a
-    sbc hl, hl
-    ld l, a
-    add hl, hl
-    add hl, de
-    pop de
-    ldi
-    ldi
-    ex de, hl
-    inc bc
-    inc bc
     ret
 
 osColors:

@@ -1,7 +1,7 @@
 include '../../include/ez80.inc'
 include '../../include/tiformat.inc'
 
-format ti archived appvar 'Triss'
+format ti archived appvar 'Colors'    ; Set this to the animation name
 
 ;---------------------------------
 ; Metadata structure:
@@ -19,8 +19,8 @@ format ti archived appvar 'Triss'
 metadata:
     db "SAVR"
     dl exec - metadata
-    db "Triss", 0
-    db "Merth", 0
+    db "Colors", 0        ; Set this to the animation name
+    db "RoccoLox", 0      ; Set this to the author name
 
 exec:
     include 'bin/output.asm'
