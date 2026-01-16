@@ -1,6 +1,16 @@
+ifeq ($(OS),Windows_NT)
+SHELL = cmd.exe
+RMDIR = ( rmdir /s /q $(subst /,\,$(1)) 2>nul || call )
+MKDIR = ( mkdir $(subst /,\,$(1)) 2>nul || call )
+else
+RMDIR = rm -rf $1
+MKDIR = mkdir -p $1
+endif
+
 all: animations app
 
 animations:
+	@$(call MKDIR,animations/bin)
 	@$(MAKE) -C animations/aod all
 	@$(MAKE) -C animations/beziers all
 	@$(MAKE) -C animations/baubles all
@@ -23,6 +33,7 @@ app:
 	@$(MAKE) -C app
 
 clean:
+	@$(call RMDIR,animations/bin)
 	@$(MAKE) -C animations/aod clean
 	@$(MAKE) -C animations/beziers clean
 	@$(MAKE) -C animations/baubles clean
