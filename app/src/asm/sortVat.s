@@ -31,24 +31,25 @@
 ;
 ; uses insertion sort to sort the vat alphabetically
 
-    assume adl=1
+    .assume adl=1
 
-    section .text
+    .include "src/asm/include/ti84pceg.inc"
 
-include 'include/ti84pceg.inc'
+    .equ sortFlag, ti.asm_Flag1
+    .equ sortFirstItemFound, 0
+    .equ sortFirstHidden, 1
+    .equ sortSecondHidden, 2
 
-    sortFlag := ti.asm_Flag1
-    sortFirstItemFound := 0
-    sortFirstHidden := 1
-    sortSecondHidden := 2
+    .equ sortFirstItemFoundPtr, ti.mpLcdCrsrImage
+    .equ sortEndOfPartPtr, ti.mpLcdCrsrImage + 3
+    .equ sortVatEntrySize, ti.mpLcdCrsrImage + 6
+    .equ sortVatEntryNewLoc, ti.mpLcdCrsrImage + 9
+    .equ sortVatEntryTempEnd, ti.mpLcdCrsrImage + 12 + 15
 
-    sortFirstItemFoundPtr := ti.mpLcdCrsrImage
-    sortEndOfPartPtr := ti.mpLcdCrsrImage + 3
-    sortVatEntrySize := ti.mpLcdCrsrImage + 6
-    sortVatEntryNewLoc := ti.mpLcdCrsrImage + 9
-    sortVatEntryTempEnd := ti.mpLcdCrsrImage + 12 + 15
+    .global _sortVAT
+    .type   _sortVAT, @function
 
-    public _sortVAT
+    .section .text
 
 _sortVAT:
     ld iy, ti.flags
@@ -245,5 +246,5 @@ _sortVAT:
     ret
 
 misc_sortTypes:
-    db ti.ProgObj, ti.ProtProgObj, ti.AppVarObj
-.length := $-.
+    .db ti.ProgObj, ti.ProtProgObj, ti.AppVarObj
+.set misc_sortTypes.length, $ - misc_sortTypes

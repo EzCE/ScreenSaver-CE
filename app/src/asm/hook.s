@@ -1,33 +1,35 @@
-    assume adl=1
+    .assume adl=1
 
-    section .text
 
-include 'include/ti84pceg.inc'
+    .include "src/asm/include/ti84pceg.inc"
 
-    public hookStart
+    .global hookStart
+    .type   hookStart, @function
+
+    .equ screenBackupSize, (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
+    .equ statusBarBackupSize, (300 * 10) * 2
+    .equ hookBackup, ti.pixelShadow2
+    .equ returnVal, hookBackup + 3
 
 ;---------------------------------
 
-screenBackupSize := (ti.lcdWidth * (ti.lcdHeight - 30)) / 2
-statusBarBackupSize := (300 * 10) * 2
-hookBackup := ti.pixelShadow2
-returnVal := hookBackup + 3
+    .section .text
 
-macro spi cmd, params&
-    ld a, cmd
+.macro spi cmd, params:vararg
+    ld a, \cmd
     call spiCmd
-    match any, params
-        iterate param, any
-            ld a, param
+    .ifnb \params
+        .irp param, \params
+            ld a, \param
             call spiParam
-        end iterate
-    end match
-end macro
+        .endr
+    .endif
+.endm
 
 ;---------------------------------
 
 hookStart:
-    db $83
+    .db $83
     set ti.apdAble, (iy + ti.apdFlags)
     cp a, $1B
     ret nz
@@ -274,7 +276,7 @@ setHook:
     ret
 
 rawKeyHook:
-    db $83
+    .db $83
     call ti.ClrRawKeyHook
     ld hl, (hookBackup)
     call ti.ChkHLIs0
@@ -283,13 +285,13 @@ rawKeyHook:
     ret
 
 tempProg:
-    db ti.TempProgObj, "Screen", 0
+    .db ti.TempProgObj, "Screen", 0
 
 settingsAppvar:
-    db ti.AppVarObj, "ScrnSavr", 0
+    .db ti.AppVarObj, "ScrnSavr", 0
 
 validHeader:
-    db "SAVR", 0
+    .db "SAVR", 0
 
 storeScreen:
     push de
@@ -384,7 +386,7 @@ restoreScreen:
     srl a
     ld (.smcOffset1), a
     lea hl, ix + 0
-.smcOffset1 := ti.cursorImage + (($ - 1) - findRestoreProgram)
+.set .smcOffset1, ti.cursorImage + (($ - 1) - findRestoreProgram)
 
     ldi
     ldi
@@ -398,7 +400,7 @@ restoreScreen:
     add a, a
     ld (.smcOffset2), a
     lea hl, ix + 0
-.smcOffset2 := ti.cursorImage + (($ - 1) - findRestoreProgram)
+.set .smcOffset2, ti.cursorImage + (($ - 1) - findRestoreProgram)
 
     ldi
     ldi
@@ -464,15 +466,11 @@ resetVcomp:
 
 spiParam:
     scf
-    virtual
-        jr nc, $
-        load .jr_nc : byte from $$
-    end virtual
-    db .jr_nc
+    .db 0x30
 
 spiCmd:
     or a, a
-    ld hl, ti.mpSpiData or 8 shl 8
+    ld hl, ti.mpSpiData | (8 << 8)
     ld b, 3
 
 .loop:	
@@ -501,52 +499,76 @@ spiCmd:
     ret
 
 osColors:
-    dw $7FFE ; highlight
-    dw $001F ; blue
-    dw $F800 ; red
-    dw $0000 ; black
-    dw $F81F ; magenta
-    dw $04E0 ; green
-    dw $FC64 ; orange
-    dw $B100 ; brown
-    dw $0010 ; navy
-    dw $049F ; light blue
-    dw $FFE0 ; yellow
-    dw $FFFF ; white
-    dw $E71C ; light gray
-    dw $C618 ; medium gray
-    dw $8C51 ; gray
-    dw $52AA ; dark gray
+    .dw $7FFE ; highlight
+    .dw $001F ; blue
+    .dw $F800 ; red
+    .dw $0000 ; black
+    .dw $F81F ; magenta
+    .dw $04E0 ; green
+    .dw $FC64 ; orange
+    .dw $B100 ; brown
+    .dw $0010 ; navy
+    .dw $049F ; light blue
+    .dw $FFE0 ; yellow
+    .dw $FFFF ; white
+    .dw $E71C ; light gray
+    .dw $C618 ; medium gray
+    .dw $8C51 ; gray
+    .dw $52AA ; dark gray
 
 colors:
-    db 3 ; black
-    db 2 dup 0
-    db 12 ; light gray
-    db 12 dup 0
-    db 8 ; navy
-    db 6 dup 0
-    db 4 ; magenta
-    db 7 dup 0
-    db 1 ; blue
-    db 64 dup 0
-    db 6 ; orange
-    db 28 dup 0
-    db 0 ; highlight color
-    db 37 dup 0
-    db 9 ; light blue
-    db 13 dup 0
-    db 7 ; brown
-    db 43 dup 0
-    db 14 ; gray
-    db 13 ; medium gray
-    db 10 ; yellow
-    db 4 dup 0
-    db 5 ; green
-    db 19 dup 0
-    db 2 ; red
-    db 3 dup 0
-    db 15 ; dark gray
-    db 0 ; null
-    db 11 ; white
-    db 0 ; null
+    .db 3 ; black
+    .rept 2
+    .db 0
+    .endr
+    .db 12 ; light gray
+    .rept 12
+    .db 0
+    .endr
+    .db 8 ; navy
+    .rept 6
+    .db 0
+    .endr
+    .db 4 ; magenta
+    .rept 7
+    .db 0
+    .endr
+    .db 1 ; blue
+    .rept 64
+    .db 0
+    .endr
+    .db 6 ; orange
+    .rept 28
+    .db 0
+    .endr
+    .db 0 ; highlight color
+    .rept 37
+    .db 0
+    .endr
+    .db 9 ; light blue
+    .rept 13
+    .db 0
+    .endr
+    .db 7 ; brown
+    .rept 43
+    .db 0
+    .endr
+    .db 14 ; gray
+    .db 13 ; medium gray
+    .db 10 ; yellow
+    .rept 4
+    .db 0
+    .endr
+    .db 5 ; green
+    .rept 19
+    .db 0
+    .endr
+    .db 2 ; red
+    .rept 3
+    .db 0
+    .endr
+    .db 15 ; dark gray
+    .db 0 ; null
+    .db 11 ; white
+    .db 0 ; null
 hookEnd:

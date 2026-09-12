@@ -17,6 +17,6 @@ include $(shell cedev-config --makefile)
 
 OUTPUTASM = $(NAME).asm
 
-all:
-	$(Q)convbin -j 8x -k asm -i $(BINDIR)/$(TARGET8XP) -o $(BINDIR)/$(OUTPUTASM) -n $(NAME)
+build:
+	$(Q)convbin -j 8x -k asm -i $(BINDIR)/$(TARGET) -o $(BINDIR)/$(OUTPUTASM) -n $(NAME)
 	$(Q)fasmg asm/$(ASM_SRC) ../$(BINDIR)/$(APPVAR_NAME).8xv

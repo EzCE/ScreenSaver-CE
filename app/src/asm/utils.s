@@ -1,15 +1,18 @@
-    assume adl=1
+    .assume adl=1
 
-    section .text
+    .include "src/asm/include/ti84pceg.inc"
 
-include 'include/ti84pceg.inc'
+    .global _installHook
+    .type   _installHook, @function
+    .global _isHookInstalled
+    .type   _isHookInstalled, @function
+    .global _previewAnimation
+    .type   _previewAnimation, @function
 
-    public _installHook
-    public _isHookInstalled
-    public _previewAnimation
+    .extern hookStart
+    .extern _exit.sp
 
-    extern hookStart
-    extern _exit.sp
+    .section .text
 
 _installHook:
     ld iy, ti.flags
@@ -30,7 +33,7 @@ _isHookInstalled:
     ret
 
 _previewAnimation:
-    call _exit.sp + 3
+    call _exit_sp
     pop de
     pop hl
     push de
@@ -40,7 +43,7 @@ _previewAnimation:
     ld (ti.OP1), a
     call ti.ChkFindSym
     call ti.ChkInRam
-    jr z, .inRam
+    jr z, _previewAnimation.inRam
     ld hl, 10
     add hl, de
     ld a, c
@@ -49,7 +52,7 @@ _previewAnimation:
     add hl, bc
     ex de, hl
 
-.inRam:
+_previewAnimation.inRam:
     ex de, hl
     ld bc, 0
     ld c, (hl)
@@ -71,7 +74,7 @@ _previewAnimation:
     call ti.EnoughMem
     pop hl
     pop bc
-    jr c, .error
+    jr c, _previewAnimation.error
     push bc
     push hl
     ld de, (ti.asm_prgm_size)
@@ -88,21 +91,21 @@ _previewAnimation:
     pop hl
     pop bc
     ldir
-    ld hl, .error
+    ld hl, _previewAnimation.error
     call ti.PushErrorHandler
     call ti.userMem
     call ti.PopErrorHandler
 
-.error:
+_previewAnimation.error:
     ld hl, _appName
     call ti.FindAppStart
     push hl
     push hl
 
-.debounce:
+_previewAnimation.debounce:
     call ti.GetCSC
     or a, a
-    jr nz, .debounce
+    jr nz, _previewAnimation.debounce
     ld a, $25
     ld ($D02687), a
     xor a, a
@@ -148,7 +151,7 @@ _previewAnimation:
     add hl, de
     or a, a
     sbc hl, de
-    jr z, .noBss
+    jr z, _previewAnimation.noBss
     push hl
     pop bc
     ld hl, $15
@@ -158,7 +161,7 @@ _previewAnimation:
     ld de, $D1787C
     ldir
 
-.noBss:
+_previewAnimation.noBss:
     pop hl
     push hl
     pop de
@@ -167,6 +170,25 @@ _previewAnimation:
     ld hl, (hl)
     add hl, de
     jp (hl)
+
+_exit_sp:
+    push hl
+    ld iy, ti.flags
+    ld a, (_exit.sp + 3)
+    ld (0xE00305), a
+    call ti.usb_ResetTimer
+    ld a, 1
+    ld (0xF00008), a ; clear on interrupt
+    res 4, (iy + 0x09) ; onInterrupt,(iy+onFlags)
+    set 0, (iy + 0x03) ; graphDraw,(iy+graphFlags)
+    set 1, (iy + 0x0D) ; use text buffer
+    res 3, (iy + 0x4A) ; use first shadow buffer
+    res 5, (iy + 0x4C) ; use shadow buffer
+    call ti.ClrLCDFull
+    call ti.HomeUp
+    call ti.DrawStatusBar
+    pop hl ; hl = exit code
+    ret
 
 _appName:
     db "ScrnSavr", 0
