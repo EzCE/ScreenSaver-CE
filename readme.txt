@@ -33,16 +33,11 @@ Add your animation to the main project makefile:
 
 ```
 # Add to animations
-animations:
-	@$(MAKE) -C animations/<your directory> all
-
-# Also add to clean
-clean:
-	@$(MAKE) -C animations/<your directory> clean
-
-# Add to gfx if your animation has a gfx rule
-gfx:
-	@$(MAKE) -C animations/<your directory> gfx
+ANIMATIONS = \
+    aod \
+    beziers \
+# ...
+    your_animation \
 ```
 
 In your the directory for your new animation, edit makefile and
@@ -67,6 +62,9 @@ turn the calculator off rather than exiting back to the OS.)
 
 To build animations, you'll need to install the CE C Toolchain:
 https://ce-programming.github.io/toolchain/static/getting-started.html
+
+You'll also need to install fasmg (flat assembler g):
+https://flatassembler.net/download.php
 
 To test your animation, you can use the bin/output.8xp file in your animation's
 directory produced when building with `make`.

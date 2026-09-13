@@ -29,16 +29,11 @@ Creating your own animations is fairly straightforward. Start by cloning the rep
 Add your animation to the main project **makefile**:
 ```makefile
 # Add to animations
-animations:
-	@$(MAKE) -C animations/<your directory> all
-
-# Also add to clean
-clean:
-	@$(MAKE) -C animations/<your directory> clean
-
-# Add to gfx if your animation has a gfx rule
-gfx:
-	@$(MAKE) -C animations/<your directory> gfx
+ANIMATIONS = \
+    aod \
+    beziers \
+# ...
+    your_animation \
 ```
 
 In your the directory for your new animation, edit **makefile** and **asm/animation.asm** to include your animation's name and any author information.
@@ -55,7 +50,7 @@ if (utility_ChkAPDTimer()) {
 ```
 (If the animation's main function returns anything other than 0, the hook will turn the calculator off rather than exiting back to the OS.)
 
-To build animations, you'll need to [install the CE C Toolchain](https://ce-programming.github.io/toolchain/static/getting-started.html#installing-the-ce-toolchain).
+To build animations, you'll need to [install the CE C Toolchain](https://ce-programming.github.io/toolchain/static/getting-started.html#installing-the-ce-toolchain). You'll also need to install [fasmg (flat assembler g)](https://flatassembler.net/download.php).
 
 To test your animation, you can use the **bin/output.8xp** file in your animation's directory produced when building with `make`.
 
