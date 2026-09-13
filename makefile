@@ -40,9 +40,11 @@ clean: $(addprefix clean-,$(ANIMATIONS))
 	@$(MAKE) -C installer clean
 
 animations: $(addprefix build-,$(ANIMATIONS))
+
+animations/bin:
 	@$(call MKDIR,animations/bin)
 
-$(addprefix build-,$(ANIMATIONS)):
+$(addprefix build-,$(ANIMATIONS)): | animations/bin
 	@$(MAKE) -C animations/$(patsubst build-%,%,$@) build
 
 $(addprefix clean-,$(ANIMATIONS)):
