@@ -17,7 +17,7 @@ ScreenSaver CE is a screensaver program for the TI-84 Plus CE. The program uses 
 ## Installation
 
 1. Download the latest version of ScreenSaver CE from the [GitHub releases page](https://github.com/EzCE/ScreenSaver-CE/releases/latest).
-2. Send **SCRNSAVR.8xp** and **AppInstA.8xv**, along with any animations (found in the **Animations** directory) of your choice to your calculator using TI-Connect CE or TiLP. If you don't have the [CE C libraries](https://tiny.cc/clibs), you'll need to download and send those as well.
+2. Send **SCRNSAVR.8xp** and **ScrnSav.0.8xv**, along with any animations (found in the **Animations** directory) of your choice to your calculator using TI-Connect CE or TiLP. If you don't have the [CE C libraries](https://tiny.cc/clibs), you'll need to download and send those as well.
 3. Run **prgmSCRNSAVR** to install the settings app.
 4. Open **ScrnSavr** in the calculator's apps menu to enable the screensaver, change settings, or pick an animation.
 5. You can preview screensaver animations before setting them using the preview button in the app.

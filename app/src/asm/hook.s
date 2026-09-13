@@ -386,7 +386,7 @@ restoreScreen:
     srl a
     ld (.smcOffset1), a
     lea hl, ix + 0
-.set .smcOffset1, ti.cursorImage + (($ - 1) - findRestoreProgram)
+.equ .smcOffset1, ti.cursorImage + (($ - 1) - findRestoreProgram)
 
     ldi
     ldi
@@ -400,7 +400,7 @@ restoreScreen:
     add a, a
     ld (.smcOffset2), a
     lea hl, ix + 0
-.set .smcOffset2, ti.cursorImage + (($ - 1) - findRestoreProgram)
+.equ .smcOffset2, ti.cursorImage + (($ - 1) - findRestoreProgram)
 
     ldi
     ldi

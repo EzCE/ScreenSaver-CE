@@ -247,4 +247,4 @@ _sortVAT:
 
 misc_sortTypes:
     .db ti.ProgObj, ti.ProtProgObj, ti.AppVarObj
-.set misc_sortTypes.length, $ - misc_sortTypes
+.equ misc_sortTypes.length, $ - misc_sortTypes
